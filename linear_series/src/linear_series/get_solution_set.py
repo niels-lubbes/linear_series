@@ -5,7 +5,7 @@ Created on Aug 6, 2016
 '''
 from sage.all import *
 
-from verbose import *
+from class_ls_tools import LSTools
 from class_linear_series import *
 
 def get_solution_set( ls ):
@@ -20,7 +20,7 @@ def get_solution_set( ls ):
           all polynomials in "ls.pol_lst" vanish.
     '''
 
-    dprint( ls.pol_lst )
+    LSTools.p( ls.pol_lst )
 
     if  len( ls.gens() ) != 2:
         raise Exception( 'Not implemented for polynomials in', ls.gens() )
@@ -49,15 +49,15 @@ def get_solution_set( ls ):
 
     # factor resultant in linear factors
     fct_lst = ls.ring.factor( xres )
-    dprint( fct_lst )
+    LSTools.p( fct_lst )
 
     # obtain candidates for x-coordinates of solutions
     xsol_lst = []
     for fct in fct_lst:
         xsol_lst += [ -fct[0].subs( {xres.variables()[0]:0} ) ]
     xsol_lst = list( set( xsol_lst ) )
-    dprint( xsol_lst )
-    dprint( [type( xsol ) for xsol in xsol_lst ] )
+    LSTools.p( xsol_lst )
+    LSTools.p( [type( xsol ) for xsol in xsol_lst ] )
 
     # find y-coordinate for each x-coordinate
     xysol_lst = []
@@ -90,5 +90,5 @@ def get_solution_set( ls ):
                 xysol_lst += [( xsol, ysol )]
 
     xysol_lst = list( set( xysol_lst ) )
-    dprint( len( xysol_lst ), xysol_lst )
+    LSTools.p( len( xysol_lst ), xysol_lst )
     return xysol_lst

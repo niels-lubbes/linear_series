@@ -1,31 +1,45 @@
 '''
+Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
+
 Created on Aug 4, 2016
 @author: Niels Lubbes
 '''
 from sage.all import *
 
-from verbose import *
+from class_ls_tools import LSTools
 
 
 class PolyRing:
     '''
     Polynomial ring defined over an algebraic number field.
+    The base field is a number field and is a static variable.
+    Unless explicitly specified in the constructor, the number field
+    will contain roots, that were previously added.     
     '''
-    # Initially the number field is the rational numbers.
+    # Initially the number field is the rational numbers (static).
     num_field = QQ
 
-    # List of roots in number field that are adjoined to QQ.
+    # List of roots in number field that are adjoined to QQ (static).
+    # This list is used in "PolyRing.__str__()" for the human readable output format.
     root_lst = []
 
-    def __init__( self, var_lst = 'x,y,z' ):
+    def __init__( self, var_lst = 'x,y,z', reset_num_field = False ):
         '''
         Constructor.
         
         INPUT:
-            - "var_lst" -- A string of characters separated by comma's.
-                           The characters represent the generators of a 
-                           polynomial ring over "Poly_Ring.num_field".
+            - "var_lst"         -- A string of characters separated by comma's.
+                                   The characters represent the generators of a 
+                                   polynomial ring over "Poly_Ring.num_field".
+            - "reset_num_field" -- If True then the base field is reset to QQ.
+                                   Otherwise, the base field remembers previously
+                                   added roots.
         '''
+
+        # reset static num_field variable
+        if reset_num_field:
+            PolyRing.num_field = QQ
+            PolyRing.root_lst = []
 
         # Polynomial ring over an algebraic number field.
         self.pol_ring = PolynomialRing( PolyRing.num_field, var_lst )
@@ -56,6 +70,16 @@ class PolyRing:
 
 
     def set_num_field( self, field ):
+        '''
+        INPUT:
+            - A Sage field object. For example QQ.
+        OUTPUT:
+            - Modifies "self.pol_ring" to be a PolynomialRing over the new
+              base field. Note that PolyRing.root_lst is not updated by this
+              method! In particular, if not used with care, the output of
+              "PolyRing.__str__()" might be inconsistent with the current
+              base field.  
+        '''
         self.pol_ring = self.pol_ring.change_ring( field )
         PolyRing.num_field = self.get_num_field()
         self.__update_ring_dct()
@@ -173,7 +197,7 @@ class PolyRing:
         spol1, spol2 = self.coerce_ff( [pol1, pol2] )
         squo = spol1.quo_rem( spol2 )[0]
         quo = self.coerce( squo )
-        dprint( ( pol1, pol2, squo, quo ) )
+        LSTools.p( ( pol1, pol2, squo, quo ) )
         return quo
 
 
@@ -196,7 +220,7 @@ class PolyRing:
             sres = spol1.resultant( spol2, svar )
 
         res = self.coerce( sres )
-        dprint( ( pol1, pol2, var, sres, res ) )
+        LSTools.p( ( pol1, pol2, var, sres, res ) )
 
         return res
 
@@ -207,26 +231,26 @@ class PolyRing:
             - "pol_lst" -- A (string of a) list of polynomials in "self.pol_ring"
         
         OUTPUT: 
-            - Returns 2 lists:
-                * Returns a list of non-constant factors of the 
+            - Returns the following two lists:
+                * A list of non-constant factors of the 
                   gcd over QQ of the polynomials:  
                     [( factor in "self.pol_ring", multiplicity ),...].
-                * Returns a list of polynomials in "self.pol_ring" such 
+                * A list of polynomials in "self.pol_ring" such 
                   that the gcd is factored out.
         '''
-        dprint( pol_lst )
+        LSTools.p( pol_lst )
 
         # In Sage it is currently not possible to compute gcd and to
         # factor a multivariate polynomial over a number field.
 
         # convert to symbolic ring
         spol_lst = self.coerce_sr( pol_lst )
-        dprint( spol_lst )
+        LSTools.p( spol_lst )
 
         # compute gcd and factor in symbolic ring
         sgcd = gcd( spol_lst )
         sfct_lst = sgcd.factor_list()
-        dprint( sgcd, sfct_lst )
+        LSTools.p( sgcd, sfct_lst )
 
         # factor out gcd in polynomials
         spol_lst = [ expand( spol / sgcd ) for spol in spol_lst]
@@ -240,7 +264,7 @@ class PolyRing:
             if fct[0] not in PolyRing.num_field:
                 nfct_lst += [ fct ]
 
-        dprint( nfct_lst, npol_lst )
+        LSTools.p( nfct_lst, npol_lst )
         return nfct_lst, npol_lst
 
 
@@ -249,7 +273,7 @@ class PolyRing:
         INPUT:
             - "pol" -- A univariate polynomial in "self.pol_ring".
         OUTPUT
-            - A list of factors of "pol" in "PolyRing.num_field":
+            - A list of factors of "pol" in "PolyRing.pol_ring":
               
               [  ( <polynomial-factor>, <multiplicity> ), ... ]               
               
@@ -293,7 +317,7 @@ class PolyRing:
         fct_lst = self.factor( pol )
         first_pol = fct_lst[0][0]
 
-        # dprint( [fct_lst, self ] )
+        # LSTools.p( [fct_lst, self ] )
 
         if first_pol.degree() == 1:
             fct_lst = fct_lst[1:]

@@ -6,108 +6,23 @@ Here functionality of "linear_series" package is tested.
 Our methods use Sage.  
 The method names in this module are of the form: 
     "test_[method name to be tested]_[index]()"
-For output we use "dprint()" in "verbose.py".
+For output we use "lt.p()" in "verbose.py".
 '''
 
 from sage.all import *
 
-from verbose import *
+from class_ls_tools import LSTools
 from class_poly_ring import *
 from class_linear_series import *
 from class_base_points import *
 from get_implicit import *
 
 
-def test_poly_ring_0():
-    '''
-    The class of "PolyRing" is built around Sage functionality
-    as show cased in this method. Note in particular that 
-    some functionality is not available in a "PolynomialRing" 
-    over a "NumberField", but is available over a "FractionField".
-    '''
+lt = LSTools()
 
-    # construct a ring Rxyz over a number field
-    R = PolynomialRing( QQ, 'a' )
-    a = R.gens()[0]
-    F0 = NumberField( [a ** 2 + a + 1], 'a0' )
-    a0 = F0.gens()[0]
-    R.change_ring( F0 )
-    F1 = NumberField( [a ** 5 + a0 + a + 3], 'a1' )
-    a1 = F1.gens()[0]
-    R.change_ring( F1 )
-    F2 = NumberField( [a ** 2 + a + a0 ** 5 + a1 + 3], 'a2' )
-    a2 = F2.gens()[0]
-    R.change_ring( F2 )
-    Rxyz = PolynomialRing( F2, var( 'x,y,z' ), order = 'lex' )
-    x, y, z = Rxyz.gens()
 
-    # we consider some elements in Rxyz
-    pol = x ** 2 + a0 * x + a1
-    pol1 = x ** 5 + x + a0 + 3
-    pol2 = x - a1
 
-    # construct a ring PR over a fraction field
-    ngens = F2.gens_dict().keys()  # a0, a1,...
-    FF = FractionField( PolynomialRing( QQ, ngens ) )
-    pgens = Rxyz.gens_dict().keys()  # x, y, z
-    PR = PolynomialRing( FF, pgens )
-    eval_dct = PR.gens_dict()
-    eval_dct.update( FF.gens_dict() )
 
-    # coerce elements to fraction field
-    spol1 = sage_eval( str( pol1 ), eval_dct )
-    spol2 = sage_eval( str( pol2 ), eval_dct )
-    sx = sage_eval( str( x ), eval_dct )
-    sy = sage_eval( str( y ), eval_dct )
-    sz = sage_eval( str( z ), eval_dct )
-
-    # in PR we can compute quo_rem, resultant and gcd
-    squo = spol1.quo_rem( spol2 )[0]
-    sres = spol1.resultant( spol2, sx )
-
-    # coerce back to Rxyz
-    eval_dct2 = Rxyz.gens_dict()
-    eval_dct2.update( F2.gens_dict() )
-    quo = sage_eval( str( squo ), eval_dct2 )
-    res = sage_eval( str( sres ), eval_dct2 )
-
-    # note that pol1 and pol2 have a common factor
-    # over the number field F2 so res=0 although sres!=0.
-    #
-    dprint( 'pol, pol1, pol2 =', ( pol, pol1, pol2 ) )
-    dprint( 'pol1 =', factor( pol1 ) )
-    dprint( factor( x ** 5 + x + a0 + 3 ) )
-    dprint( 'squo =', squo )
-    dprint( 'sres =', sres )
-    dprint( 'res =', res )
-
-def test_poly_ring_1():
-    '''
-    Test PolyRing object.
-    '''
-
-    ring = PolyRing( 'x,y,z' )
-    ring.ext_num_field( 't^2 + t + 1' )
-
-    dprint( ring )
-
-    ring.ext_num_field( 't^3 + t + a0 + 3' )
-
-    dprint( ring )
-
-    a = ring.root_gens()
-    x, y, z = ring.gens()
-    pol = x ** 2 + a[0] * x + a[1]
-
-    dprint( factor( pol ) )
-    dprint( factor( x ** 3 + x + a[0] + 3 ) )
-
-    dprint( ring.aux_gcd( '[x*y^2 + a1*y^3, y^5, x^5*y^5]' ) )
-
-    mat = pol.sylvester_matrix( y ** 2 + x ** 2, x )
-    dprint( mat )
-
-    dprint()
 
 
 def test_linear_series_0():
@@ -123,11 +38,11 @@ def test_linear_series_0():
 
     xls = ls.copy().chart( x )
 
-    dprint( xls )
+    lt.p( xls )
 
     sol_lst = xls.get_solution_set()
 
-    dprint( len( sol_lst ), sol_lst )
+    lt.p( len( sol_lst ), sol_lst )
 
     # y,z=var('y,z')
     # pol_lst = [y^2*z + z, y^3 + z^3]
@@ -212,7 +127,7 @@ def test_get_base_points_0():
     #
     # Uncomment following line for disabling output of debug info:
     #
-    dprint( False, 'ls_main.py' )
+    lt.p( False, 'ls_main.py' )
 
     idx = 0
     for pol_lst in pol_lst_lst:
@@ -220,10 +135,10 @@ def test_get_base_points_0():
         PolyRing.num_field = QQ
         ls = LinearSeries( pol_lst )
 
-        dprint( idx )
-        dprint( ls )
+        lt.p( idx )
+        lt.p( ls )
         bp_tree = ls.get_bp_tree()
-        dprint( bp_tree )
+        lt.p( bp_tree )
 
         idx += 1
 
@@ -238,10 +153,10 @@ def test_get_base_points_1():
     ring = PolyRing( 'x,y,z' )
 
     ring.ext_num_field( 't^2 + 1' )
-    dprint( ring )
+    lt.p( ring )
 
     ring.ext_num_field( 't^3 + a0' )
-    dprint( ring )
+    lt.p( ring )
 
     a0, a1 = ring.root_gens()
     x, y, z = ring.gens()
@@ -249,10 +164,10 @@ def test_get_base_points_1():
     pol_lst = [x ** 2 + a0 * y * z, y + a1 * z + x ]
 
     ls = LinearSeries( pol_lst, ring )
-    dprint( ls )
+    lt.p( ls )
 
     bp_tree = ls.get_bp_tree()
-    dprint( bp_tree )
+    lt.p( bp_tree )
 
 
 def test_get_base_points_2():
@@ -273,10 +188,10 @@ def test_get_base_points_2():
                 '2*v^2*x^2 + 4/5*v^2*x*y + 12/5*v*w*x*y - 2*v^2*y^2' ]
 
     ls = LinearSeries( pol_lst, PolyRing( 'x,y,v,w' ) )
-    dprint( ls )
+    lt.p( ls )
 
     bp_tree = ls.get_bp_tree()
-    dprint( bp_tree )
+    lt.p( bp_tree )
 
 
 def test_get_linear_series_0():
@@ -285,13 +200,13 @@ def test_get_linear_series_0():
     '''
 
     mon_lst = get_mon_lst( 2, PolyRing( 'x,y,z' ).gens() )
-    dprint( len( mon_lst ), mon_lst )
+    lt.p( len( mon_lst ), mon_lst )
 
     mon_lst = get_mon_lst( 1, PolyRing( 'x,y,v,w' ).gens() )
-    dprint( len( mon_lst ), mon_lst )
+    lt.p( len( mon_lst ), mon_lst )
 
     mon_lst = get_mon_lst( 2, PolyRing( 'x,y,v,w' ).gens() )
-    dprint( len( mon_lst ), mon_lst )
+    lt.p( len( mon_lst ), mon_lst )
 
 
 def test_get_linear_series_1():
@@ -305,13 +220,13 @@ def test_get_linear_series_1():
     bp = bp.add( 't', ( 0, 0 ), 1 )
     bp = bp.add( 't', ( -1, 0 ), 1 )
     bp = bp.add( 't', ( 0, 0 ), 1 )
-    dprint( bp_tree )
+    lt.p( bp_tree )
 
     ls = LinearSeries.get( 2, bp_tree )
-    dprint( ls )
+    lt.p( ls )
 
-    dprint( 20 * '==' )
-    dprint( ls.get_bp_tree() )
+    lt.p( 20 * '==' )
+    lt.p( ls.get_bp_tree() )
 
 
 def test_get_linear_series_2():
@@ -332,12 +247,12 @@ def test_get_linear_series_2():
     bp_tree = BasePointTree( ['xv', 'xw', 'yv', 'yw'] )
     bp = bp_tree.add( 'xv', ( -a0, a0 ), 1 )
     bp = bp_tree.add( 'xv', ( a0, -a0 ), 1 )
-    dprint( bp_tree )
+    lt.p( bp_tree )
 
     # construct corresponding linear series of bi-degree (2,2)
     # and 2 simple complex conjugate base points
     ls = LinearSeries.get( 2, bp_tree )
-    dprint( ls.get_bp_tree() )
+    lt.p( ls.get_bp_tree() )
 
     # linear series of bidegree (2,2) with same base points
     pol_lst = [
@@ -351,11 +266,11 @@ def test_get_linear_series_2():
          ]
     ls = LinearSeries( pol_lst, PolyRing( 'x,y,v,w' ) )
     bp_tree = ls.get_bp_tree()
-    dprint( bp_tree )
+    lt.p( bp_tree )
 
-    dprint( 'pol_lst =' )
+    lt.p( 'pol_lst =' )
     for pol in ls.pol_lst:
-        dprint( '\t', factor( pol ) )
+        lt.p( '\t', factor( pol ) )
 
 
 def test_get_linear_series_3():
@@ -376,18 +291,18 @@ def test_get_linear_series_3():
     bp_tree = BasePointTree( ['xv', 'xw', 'yv', 'yw'] )
     bp = bp_tree.add( 'xv', ( -a0, a0 ), 1 )
     bp = bp_tree.add( 'xv', ( a0, -a0 ), 1 )
-    dprint( bp_tree )
+    lt.p( bp_tree )
 
     # construct corresponding linear series of bi-degree (1,1)
     # and 2 simple complex conjugate base points
     ls = LinearSeries.get( 1, bp_tree )
-    dprint( ls.get_bp_tree() )
+    lt.p( ls.get_bp_tree() )
 
     # linear series of bidegree (1,1) with same base points
     pol_lst = ['x * v - y * w', 'y * v + x * w' ]
     ls = LinearSeries( pol_lst, PolyRing( 'x,y,v,w' ) )
     bp_tree = ls.get_bp_tree()
-    dprint( bp_tree )
+    lt.p( bp_tree )
 
 
 def test_get_implicit_0():
@@ -410,8 +325,8 @@ def test_get_implicit_0():
     for deg, pol_lst in input_lst:
         ls = LinearSeries( pol_lst )
         pol = ls.get_implicit_projection( deg )
-        dprint( 'idx =', idx )
-        dprint( 'pol =', pol )
+        lt.p( 'idx =', idx )
+        lt.p( 'pol =', pol )
         idx += 1
 
 
@@ -436,7 +351,7 @@ def test_get_implicit_1():
 
     # base points of linear series
     bp_tree = ls.get_bp_tree()
-    dprint( bp_tree )
+    lt.p( bp_tree )
 
     # implicit image in projective 6-space
     # of map associated to linear series
@@ -448,11 +363,11 @@ def test_get_implicit_1():
     imp_lst = sage_eval( str( imp_lst ), ring.gens_dict() )
     hpol = ring.ideal( imp_lst ).hilbert_polynomial()
     hdeg = hpol.diff().diff()
-    dprint( hdeg, hpol )
+    lt.p( hdeg, hpol )
 
     # equation of unit sphere is not in the ideal
     s_pol = sum( [-x_lst[0] ** 2] + [x ** 2 for x in x_lst[1:]] )
-    dprint( 'Inside sphere?: ', s_pol in ideal( imp_lst ) )
+    lt.p( 'Inside sphere?: ', s_pol in ideal( imp_lst ) )
 
     # compute random quadrics containing del Pezzo surface
     # until a quadric with signature (1,6) is found
@@ -486,7 +401,7 @@ def test_get_implicit_1():
         num_neg = len( [ d for d in D.diagonal() if d < 0 ] )
         num_zer = len( [ d for d in D.diagonal() if d == 0 ] )
         sig = [ num_pos, num_neg, num_zer ]
-        dprint( 'sig =', sig, c_lst )
+        lt.p( 'sig =', sig, c_lst )
 
     # output of M.eigenmatrix_right() ensures that
     # D has signature either (--- --- +) or (- +++ +++)
@@ -510,38 +425,30 @@ def test_get_implicit_1():
     U = L * W
 
     # output
-    dprint( 'pmz_lst =', pmz_lst )
-    dprint( 'imp_lst =', imp_lst )
-    dprint( 'M_pol   =', M_pol )
-    dprint( 'tests   =', vx * M * vx == M_pol, M_pol in ideal( imp_lst ), M * V == V * D )
-    dprint( 'M       =', list( M ) )
-    dprint( 'D diag. =', D.diagonal() )
-    dprint( 'J diag. =', J.diagonal() )
-    dprint( 'U       =', list( U ) )
-    dprint( 'U.T*J*U =', list( U.T * J * U ) )
-
-
+    lt.p( 'pmz_lst =', pmz_lst )
+    lt.p( 'imp_lst =', imp_lst )
+    lt.p( 'M_pol   =', M_pol )
+    lt.p( 'tests   =', vx * M * vx == M_pol, M_pol in ideal( imp_lst ), M * V == V * D )
+    lt.p( 'M       =', list( M ) )
+    lt.p( 'D diag. =', D.diagonal() )
+    lt.p( 'J diag. =', J.diagonal() )
+    lt.p( 'U       =', list( U ) )
+    lt.p( 'U.T*J*U =', list( U.T * J * U ) )
 
 
 if __name__ == '__main__':
 
+    lt.start_timer()
+    lt.filter( '__main__.py' )  # output only from this module
 
-    #  Debug output settings
-    #
-    dprint( False, 'ls_main.py' )  # show only output from 'ls_main.py'
-    # dprint( True )  # show all output
-    tprint( True )  # show timing
+    ###############################################
+    # (un)comment usecases for this package below #
+    ###############################################
 
-    #########################################
-    #                                       #
-    # Uncomment one or more test methods    #
-    #                                       #
-    #########################################
-
-    # test_poly_ring_0() #        test Sage rings and number field functionality
+    test_poly_ring_0()  #        test Sage rings and number field functionality
     # test_poly_ring_1() #        test PolyRing object
     # test_linear_series_0() #    test LinearSeries object
-    test_get_base_points_0()  # obtain base points of several examples of linear series
+    # test_get_base_points_0()  # obtain base points of several examples of linear series
     # test_get_base_points_1() # obtain base points with linear series over QQ(a0,a1)
     # test_get_base_points_2()  # obtain base points with linear series on P^1xP^1
     # test_get_linear_series_0()  # test "get_mon_lst()"
@@ -557,8 +464,7 @@ if __name__ == '__main__':
     #                                       #
     #########################################
 
-    # end timing
-    tprint()
-
+    lt.stop_timer()
     print
-    print 'The End'
+    print( 'The End' )
+

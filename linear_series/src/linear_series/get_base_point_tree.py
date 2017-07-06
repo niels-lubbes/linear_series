@@ -5,7 +5,7 @@ Created on Aug 4, 2016
 
 from sage.all import *
 
-from verbose import *
+from class_ls_tools import LSTools
 from class_poly_ring import *
 from class_linear_series import *
 from class_base_points import *
@@ -75,8 +75,8 @@ def get_bp_lst_chart( ls, chart, depth = 0 ):
           of linear series "ls".
     '''
 
-    dprint( 5 * '=' )
-    dprint( ( depth, chart, ls ) )
+    LSTools.p( 5 * '=' )
+    LSTools.p( ( depth, chart, ls ) )
 
     nls = ls.copy()
     if chart == 's':

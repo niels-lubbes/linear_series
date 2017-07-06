@@ -1,4 +1,4 @@
 #!/usr/bin/env python
 
-import linkage
+import linear_series
 print 'Not yet implemented'
