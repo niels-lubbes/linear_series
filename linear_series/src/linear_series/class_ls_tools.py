@@ -53,7 +53,7 @@ class LSTools():
     @staticmethod
     def filter_unset():
         '''
-        Output via ".out" will not be surpressed.
+        Output via ".p()" will not be surpressed.
         '''
         LSTools.__filter_fname = None
 

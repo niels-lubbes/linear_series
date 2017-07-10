@@ -1,12 +1,8 @@
 '''
+Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
+
 Created on Aug 6, 2016
 @author: Niels Lubbes
-
-Here functionality of "linear_series" package is tested.
-Our methods use Sage.  
-The method names in this module are of the form: 
-    "test_[method name to be tested]_[index]()"
-For output we use "lt.p()" in "verbose.py".
 '''
 
 from sage.all import *
@@ -18,57 +14,53 @@ from class_base_points import *
 from get_implicit import *
 
 
-lt = LSTools()
 
-
-
-
-
-
-def test_linear_series_0():
+def usecase__get_base_points__P2():
     '''
-    Test LinearSeries object.
+    We obtain (infinitely near) base points of a 
+    linear series defined over a number field.
     '''
+    ring = PolyRing( 'x,y,z', True )
+    ring.ext_num_field( 't^2 + 1' )
+    ring.ext_num_field( 't^3 + a0' )
 
-    ring = PolyRing( 'x,y,z' )
+    a0, a1 = ring.root_gens()
     x, y, z = ring.gens()
-    pol_lst = [x ** 2 * z + y ** 2 * z, y ** 3 + z ** 3]
+
+    pol_lst = [x ** 2 + a0 * y * z, y + a1 * z + x ]
 
     ls = LinearSeries( pol_lst, ring )
+    LSTools.p( ls )
 
-    xls = ls.copy().chart( x )
+    bp_tree = ls.get_bp_tree()
+    LSTools.p( bp_tree )
 
-    lt.p( xls )
 
-    sol_lst = xls.get_solution_set()
+def usecase__get_base_points__P1P1():
+    '''
+    We obtain (infinitely near) base points of a 
+    linear series defined by bi-homogeneous polynomials.
+    Such polynomials are defined on P^1xP^1 (the fiber product 
+    of the projective line with itself). 
+    The coordinate functions of P^1xP^1 are (x:y)(v:w).
+    '''
 
-    lt.p( len( sol_lst ), sol_lst )
+    pol_lst = [ '17/5*v^2*x^2 + 6/5*v*w*x^2 + w^2*x^2 + 17/5*v^2*y^2 + 6/5*v*w*y^2 + w^2*y^2',
+                '6/5*v^2*x^2 + 8/5*v*w*x^2 + 6/5*v^2*y^2 + 8/5*v*w*y^2',
+                '7/5*v^2*x^2 + 6/5*v*w*x^2 + w^2*x^2 + 7/5*v^2*y^2 + 6/5*v*w*y^2 + w^2*y^2',
+                '4*v^2*x*y',
+                '-2*v^2*x^2 + 2*v^2*y^2',
+                '2/5*v^2*x^2 + 6/5*v*w*x^2 - 4*v^2*x*y - 2/5*v^2*y^2 - 6/5*v*w*y^2',
+                '2*v^2*x^2 + 4/5*v^2*x*y + 12/5*v*w*x*y - 2*v^2*y^2' ]
 
-    # y,z=var('y,z')
-    # pol_lst = [y^2*z + z, y^3 + z^3]
-    # solve( pol_lst )
-    # [
-    #  [y == 0,
-    #   z == 0],
-    #
-    #  [y == -1/4*sqrt(2)*(sqrt(I*sqrt(3) + 1) + sqrt(-3*I*sqrt(3) - 3)),
-    #   z == -sqrt(1/2*I*sqrt(3) + 1/2)],
-    #
-    #  [y == 1/4*sqrt(2)*(sqrt(I*sqrt(3) + 1) + sqrt(-3*I*sqrt(3) - 3)),
-    #   z == sqrt(1/2*I*sqrt(3) + 1/2)],
-    #
-    #  [y == -1/4*sqrt(2)*(sqrt(3*I*sqrt(3) - 3) + sqrt(-I*sqrt(3) + 1)),
-    #   z == -sqrt(-1/2*I*sqrt(3) + 1/2)],
-    #
-    #  [y == 1/4*sqrt(2)*(sqrt(3*I*sqrt(3) - 3) + sqrt(-I*sqrt(3) + 1)),
-    #   z == sqrt(-1/2*I*sqrt(3) + 1/2)],
-    #
-    #  [y == -I, z == I],
-    #
-    #  [y == I, z == -I]]
-    #
+    ls = LinearSeries( pol_lst, PolyRing( 'x,y,v,w' ) )
+    LSTools.p( ls )
 
-def test_get_base_points_0():
+    bp_tree = ls.get_bp_tree()
+    LSTools.p( bp_tree )
+
+
+def usecase__get_base_points__examples():
     '''
     We obtain (infinitely near) base points of several 
     examples of linear series in order to test
@@ -124,94 +116,25 @@ def test_get_base_points_0():
 
     BasePointTree.short = True
 
-    #
-    # Uncomment following line for disabling output of debug info:
-    #
-    lt.p( False, 'ls_main.py' )
-
     idx = 0
     for pol_lst in pol_lst_lst:
 
-        PolyRing.num_field = QQ
-        ls = LinearSeries( pol_lst )
+        ls = LinearSeries( pol_lst, PolyRing( 'x,y,z', True ) )
 
-        lt.p( idx )
-        lt.p( ls )
+        LSTools.p( 3 * ( '\n' + 50 * '=' ) )
+        LSTools.p( 'index for example =', idx )
+        LSTools.p( ls )
+
         bp_tree = ls.get_bp_tree()
-        lt.p( bp_tree )
+        LSTools.p( bp_tree )
 
         idx += 1
 
 
-def test_get_base_points_1():
+def usecase__get_linear_series__P2():
     '''
-    We obtain (infinitely near) base points of several 
-    examples of linear series defined over a number field 
-    in order to test
-    "get_base_point_tree.get_bp_tree()".
-    '''
-    ring = PolyRing( 'x,y,z' )
-
-    ring.ext_num_field( 't^2 + 1' )
-    lt.p( ring )
-
-    ring.ext_num_field( 't^3 + a0' )
-    lt.p( ring )
-
-    a0, a1 = ring.root_gens()
-    x, y, z = ring.gens()
-
-    pol_lst = [x ** 2 + a0 * y * z, y + a1 * z + x ]
-
-    ls = LinearSeries( pol_lst, ring )
-    lt.p( ls )
-
-    bp_tree = ls.get_bp_tree()
-    lt.p( bp_tree )
-
-
-def test_get_base_points_2():
-    '''
-    Test "get_base_point_tree.get_bp_tree()".
-    We consider linear series defined by bi-homogeneous polynomials,
-    which are defined on P^1xP^1 
-    (the fiber product of the projective line with itself). 
-    The coordinate functions of P^1xP^1 are (x:y)(v:w).
-    '''
-
-    pol_lst = [ '17/5*v^2*x^2 + 6/5*v*w*x^2 + w^2*x^2 + 17/5*v^2*y^2 + 6/5*v*w*y^2 + w^2*y^2',
-                '6/5*v^2*x^2 + 8/5*v*w*x^2 + 6/5*v^2*y^2 + 8/5*v*w*y^2',
-                '7/5*v^2*x^2 + 6/5*v*w*x^2 + w^2*x^2 + 7/5*v^2*y^2 + 6/5*v*w*y^2 + w^2*y^2',
-                '4*v^2*x*y',
-                '-2*v^2*x^2 + 2*v^2*y^2',
-                '2/5*v^2*x^2 + 6/5*v*w*x^2 - 4*v^2*x*y - 2/5*v^2*y^2 - 6/5*v*w*y^2',
-                '2*v^2*x^2 + 4/5*v^2*x*y + 12/5*v*w*x*y - 2*v^2*y^2' ]
-
-    ls = LinearSeries( pol_lst, PolyRing( 'x,y,v,w' ) )
-    lt.p( ls )
-
-    bp_tree = ls.get_bp_tree()
-    lt.p( bp_tree )
-
-
-def test_get_linear_series_0():
-    '''
-    Test "get_linear_series.get_mon_lst()".
-    '''
-
-    mon_lst = get_mon_lst( 2, PolyRing( 'x,y,z' ).gens() )
-    lt.p( len( mon_lst ), mon_lst )
-
-    mon_lst = get_mon_lst( 1, PolyRing( 'x,y,v,w' ).gens() )
-    lt.p( len( mon_lst ), mon_lst )
-
-    mon_lst = get_mon_lst( 2, PolyRing( 'x,y,v,w' ).gens() )
-    lt.p( len( mon_lst ), mon_lst )
-
-
-def test_get_linear_series_1():
-    '''
-    Test "get_linear_series.get_linear_series()".
+    Construct linear series of curves in the plane P^2, 
+    with a given tree of (infinitely near) base points.
     '''
 
     # Example from PhD thesis (page 159).
@@ -220,124 +143,83 @@ def test_get_linear_series_1():
     bp = bp.add( 't', ( 0, 0 ), 1 )
     bp = bp.add( 't', ( -1, 0 ), 1 )
     bp = bp.add( 't', ( 0, 0 ), 1 )
-    lt.p( bp_tree )
+    LSTools.p( bp_tree )
 
     ls = LinearSeries.get( 2, bp_tree )
-    lt.p( ls )
+    LSTools.p( ls )
 
-    lt.p( 20 * '==' )
-    lt.p( ls.get_bp_tree() )
+    LSTools.p( 20 * '==' )
+    LSTools.p( ls.get_bp_tree() )
 
 
-def test_get_linear_series_2():
+def usecase__get_linear_series__P1P1_DP6():
     '''
-    Test "get_linear_series.get_linear_series()"
-    
-    We construct bi-homogeneous linear series in (x:y)(v:w)
-    of bi-degree (2,2). 
+    Construct linear series of curves in P^1xP^1, 
+    with a given tree of (infinitely near) base points.
     '''
 
     # construct ring over Gaussian rationals
-    ring = PolyRing( 'x,y,v,w' )
+    #
+    ring = PolyRing( 'x,y,v,w', True )
     ring.ext_num_field( 't^2 + 1' )
     a0 = ring.root_gens()[0]
 
-    # setup base point tree for 2 simple
-    # complex conjugate base points.
+    # setup base point tree for 2 simple complex conjugate base points.
+    #
     bp_tree = BasePointTree( ['xv', 'xw', 'yv', 'yw'] )
     bp = bp_tree.add( 'xv', ( -a0, a0 ), 1 )
     bp = bp_tree.add( 'xv', ( a0, -a0 ), 1 )
-    lt.p( bp_tree )
+    LSTools.p( 'We consider linear series of curves in P^1xP^1 with the following base point tree:' )
+    LSTools.p( bp_tree )
 
-    # construct corresponding linear series of bi-degree (2,2)
-    # and 2 simple complex conjugate base points
+    #
+    # Construct linear series is defined by a list of polynomials
+    # in (x:y)(v:w) of bi-degree (2,2) with base points as in "bp_tree".
+    # The defining polynomials of this linear series, correspond to a parametric map
+    # of an anticanonical model of a Del Pezzo surface of degree 6 in P^6.
+    #
+    # We expect that the linear series is defined by the following set of polynomials:
+    # ----
+    # [ 'x^2*v^2 - y^2*w^2', 'x^2*v*w + y^2*v*w', 'x^2*w^2 + y^2*w^2', 'x*y*v^2 - y^2*v*w',
+    #   'x*y*v*w - y^2*w^2', 'y^2*v*w + x*y*w^2', 'y^2*v^2 + y^2*w^2' ]
+    # ----
+    #
     ls = LinearSeries.get( 2, bp_tree )
-    lt.p( ls.get_bp_tree() )
+    LSTools.p( 'The linear series of bi-degree (2,2) corresponding to this base point tree is as follows:' )
+    LSTools.p( ls.get_bp_tree() )
 
-    # linear series of bidegree (2,2) with same base points
-    pol_lst = [
-         'x^2*v^2 - y^2*w^2',
-         'x^2*v*w + y^2*v*w',
-         'x^2*w^2 + y^2*w^2',
-         'x*y*v^2 - y^2*v*w',
-         'x*y*v*w - y^2*w^2',
-         'y^2*v*w + x*y*w^2',
-         'y^2*v^2 + y^2*w^2'
-         ]
-    ls = LinearSeries( pol_lst, PolyRing( 'x,y,v,w' ) )
-    bp_tree = ls.get_bp_tree()
-    lt.p( bp_tree )
-
-    lt.p( 'pol_lst =' )
-    for pol in ls.pol_lst:
-        lt.p( '\t', factor( pol ) )
-
-
-def test_get_linear_series_3():
-    '''
-    Test "get_linear_series.get_linear_series()"
-    
-    We construct bi-homogeneous linear series in (x:y)(v:w)
-    of bi-degree (1,1). 
-    '''
-
-    # construct ring over Gaussian rationals
-    ring = PolyRing( 'x,y,v,w' )
-    ring.ext_num_field( 't^2 + 1' )
-    a0 = ring.root_gens()[0]
-
-    # setup base point tree for 2 simple
-    # complex conjugate base points.
-    bp_tree = BasePointTree( ['xv', 'xw', 'yv', 'yw'] )
-    bp = bp_tree.add( 'xv', ( -a0, a0 ), 1 )
-    bp = bp_tree.add( 'xv', ( a0, -a0 ), 1 )
-    lt.p( bp_tree )
-
+    #
     # construct corresponding linear series of bi-degree (1,1)
     # and 2 simple complex conjugate base points
+    #
+    # We expect that the linear series is defined by the following set of polynomials:
+    # ----
+    # ['x * v - y * w', 'y * v + x * w' ]
+    # ----
+    #
     ls = LinearSeries.get( 1, bp_tree )
-    lt.p( ls.get_bp_tree() )
-
-    # linear series of bidegree (1,1) with same base points
-    pol_lst = ['x * v - y * w', 'y * v + x * w' ]
-    ls = LinearSeries( pol_lst, PolyRing( 'x,y,v,w' ) )
-    bp_tree = ls.get_bp_tree()
-    lt.p( bp_tree )
+    LSTools.p( 'The linear series of bi-degree (1,1) corresponding to this base point tree is as follows:' )
+    LSTools.p( ls.get_bp_tree() )
 
 
-def test_get_implicit_0():
+def usecase__get_implicit__DP6():
     '''
-    Test "get_implicit.get_implicit_projection()".
-    '''
-
-    input_lst = []
-
-    # 0
-    input_lst += [( 3, [ 'x^2*z+y^2*z+z^2*z', 'x^2*y', 'x*y^2', 'x*y*z' ] )]
-
-    # 1
-    input_lst += [( 7, [ 'x^2*y+y^3+y^2*x+x^3', 'x*z^2', 'y*z^2', 'z^3' ] )]
-
-    # 2
-    input_lst += [( 8, [ 'x^2*y^2', 'x^2*z^2 + x*y^3', 'y^2*z^2', 'y^4' ] )]
-
-    idx = 0
-    for deg, pol_lst in input_lst:
-        ls = LinearSeries( pol_lst )
-        pol = ls.get_implicit_projection( deg )
-        lt.p( 'idx =', idx )
-        lt.p( 'pol =', pol )
-        idx += 1
-
-
-def test_get_implicit_1():
-    '''
-    Test "get_implicit.get_implicit_image()".
-    
+    Construct linear series of curves in P^1xP^1, 
+    with a given tree of (infinitely near) base points.
+    The defining polynomials of this linear series, correspond to a parametric map
+    of an anticanonical model of a Del Pezzo surface of degree 6 in P^6.
+    Its ideal is generated by quadratic forms. We search for a quadratic form in
+    this ideal of signature (1,6). This quadratic form corresponds to a hyperquadric 
+    in P^6, such that the sextic Del Pezzo surface is contained in this hyperquadric.         
+    We construct a real projective isomorphism from this hyperquadric to the projectivization
+    of the unit 5-sphere in P^6. 
     '''
 
-    # parametrization of degree 6 del Pezzo surface
-    # in projective 6-space
+    #
+    # parametrization of degree 6 del Pezzo surface in projective 6-space.
+    # See ".usecase__get_linear_series__P1P1_DP6()" for the construction of
+    # this linear series.
+    #
     pmz_lst = [
          'x^2*v^2 - y^2*w^2',
          'x^2*v*w + y^2*v*w',
@@ -347,38 +229,51 @@ def test_get_implicit_1():
          'y^2*v*w + x*y*w^2',
          'y^2*v^2 + y^2*w^2'
          ]
-    ls = LinearSeries( pmz_lst, PolyRing( 'x,y,v,w' ) )
+    ls = LinearSeries( pmz_lst, PolyRing( 'x,y,v,w', True ) )
 
+    #
     # base points of linear series
+    #
     bp_tree = ls.get_bp_tree()
-    lt.p( bp_tree )
+    LSTools.p( 'parametrization    =', ls.pol_lst )
+    LSTools.p( 'base points        =' + str( bp_tree ) )
 
+    #
     # implicit image in projective 6-space
     # of map associated to linear series
+    #
     imp_lst = get_implicit_image( ls )
+    LSTools.p( 'implicit equations =', imp_lst )
 
+    #
     # compute Hilbert polynomial in QQ[x0,...,x6]
+    #
     ring = PolynomialRing( QQ, [ 'x' + str( i ) for i in range( 7 )] )
     x_lst = ring.gens()
     imp_lst = sage_eval( str( imp_lst ), ring.gens_dict() )
     hpol = ring.ideal( imp_lst ).hilbert_polynomial()
     hdeg = hpol.diff().diff()
-    lt.p( hdeg, hpol )
+    LSTools.p( 'Hilbert polynomial =', hpol )
+    LSTools.p( 'implicit degree    =', hdeg )
 
+    #
     # equation of unit sphere is not in the ideal
+    #
     s_pol = sum( [-x_lst[0] ** 2] + [x ** 2 for x in x_lst[1:]] )
-    lt.p( 'Inside sphere?: ', s_pol in ideal( imp_lst ) )
+    LSTools.p( 'Inside sphere?: ', s_pol in ideal( imp_lst ) )
 
+    #
     # compute random quadrics containing del Pezzo surface
     # until a quadric with signature (1,6) is found
     # or set a precomputed quadric with given "c_lst"
+    #
+    LSTools.p( 'Look for quadric in ideal of signature (1,6)...(may take a while)...' )
     sig = []
     while sorted( sig ) != [0, 1, 6]:
 
         # set coefficient list
-        # c_lst = [1, 1, -1, 1, -1, 1, 1, -1, 1, 1, -1]
-        c_lst = [-1, -1, 0, 0, 0, -1, 1, 0, -1, -1, -1]
-        # c_lst = []
+        c_lst = []
+        c_lst = [-1, -1, 0, 0, 0, -1, 1, 0, -1, -1, -1]  # uncomment to speed up execution
         if c_lst == []:
             lst = [-1, 0, 1]
             for imp in imp_lst:
@@ -401,8 +296,9 @@ def test_get_implicit_1():
         num_neg = len( [ d for d in D.diagonal() if d < 0 ] )
         num_zer = len( [ d for d in D.diagonal() if d == 0 ] )
         sig = [ num_pos, num_neg, num_zer ]
-        lt.p( 'sig =', sig, c_lst )
+        LSTools.p( '\t sig =', sig, c_lst )
 
+    #
     # output of M.eigenmatrix_right() ensures that
     # D has signature either (--- --- +) or (- +++ +++)
     #
@@ -411,8 +307,10 @@ def test_get_implicit_1():
         D.swap_columns( 0, 6 )
         D.swap_rows( 0, 6 )
 
+    #
     # diagonal orthonormalization
     # note: M == W.T*D*W == W.T*L.T*J*L*W = U.T*J*U
+    #
     W = matrix( [col / col.norm() for col in V.columns()] )
     J = []
     for d in D.diagonal():
@@ -424,47 +322,48 @@ def test_get_implicit_1():
     L = diagonal_matrix( [ d.abs().sqrt() for d in D.diagonal()] )
     U = L * W
 
-    # output
-    lt.p( 'pmz_lst =', pmz_lst )
-    lt.p( 'imp_lst =', imp_lst )
-    lt.p( 'M_pol   =', M_pol )
-    lt.p( 'tests   =', vx * M * vx == M_pol, M_pol in ideal( imp_lst ), M * V == V * D )
-    lt.p( 'M       =', list( M ) )
-    lt.p( 'D diag. =', D.diagonal() )
-    lt.p( 'J diag. =', J.diagonal() )
-    lt.p( 'U       =', list( U ) )
-    lt.p( 'U.T*J*U =', list( U.T * J * U ) )
+    #
+    # Do some tests
+    #
+    assert M_pol in ideal( imp_lst )
+    assert vx * M * vx == M_pol
+    assert M * V == V * D
+
+    #
+    # output values
+    #
+    LSTools.p( 'quadratic form of signature (1,6) in ideal =', M_pol )
+    LSTools.p( 'matrix M associated to quadratic form      =', list( M ) )
+    LSTools.p( 'M == U.T*J*U                               =', list( U.T * J * U ) )
+    LSTools.p( 'U                                          =', list( U ) )
+    LSTools.p( 'J                                          =', list( J ) )
 
 
 if __name__ == '__main__':
 
-    lt.start_timer()
-    lt.filter( '__main__.py' )  # output only from this module
+    LSTools.start_timer()
+    LSTools.filter( '__main__.py' )  # output only from this module
+
+    ################################################
+    #                                              #
+    # (Un)comment usecases for this package below. #
+    #                                              #
+    ################################################
+
+    usecase__get_base_points__P2()  # shows how to obtain base points of linear series in the projective plane P^2
+    usecase__get_base_points__P1P1()  # shows how to obtain base points of linear series in P^1xP^1
+    usecase__get_base_points__examples()  # several examples of linear series and their base point
+    usecase__get_linear_series__P2()  # shows how to construct a linear series in P^2 from given base points
+    usecase__get_linear_series__P1P1_DP6()  # shows how to construct a linear series in P^1xP^1 from given base points
+    usecase__get_implicit__DP6()  # shows how to compute the ideal of the surface parametrized by the linear series
 
     ###############################################
-    # (un)comment usecases for this package below #
+    #                                             #
+    # End of list of usecase methods.             #
+    #                                             #
     ###############################################
 
-    test_poly_ring_0()  #        test Sage rings and number field functionality
-    # test_poly_ring_1() #        test PolyRing object
-    # test_linear_series_0() #    test LinearSeries object
-    # test_get_base_points_0()  # obtain base points of several examples of linear series
-    # test_get_base_points_1() # obtain base points with linear series over QQ(a0,a1)
-    # test_get_base_points_2()  # obtain base points with linear series on P^1xP^1
-    # test_get_linear_series_0()  # test "get_mon_lst()"
-    # test_get_linear_series_1()  # example from PhD thesis (page 159)
-    # test_get_linear_series_2()  # example of degree 6 del Pezzo.
-    # test_get_linear_series_3()  # example of family degree 6 del Pezzo.
-    # test_get_implicit_0() # obtain implicit projected surface from linear series
-    # test_get_implicit_1()
-
-    #########################################
-    #                                       #
-    # End of list of test methods.          #
-    #                                       #
-    #########################################
-
-    lt.stop_timer()
+    LSTools.stop_timer()
     print
     print( 'The End' )
 

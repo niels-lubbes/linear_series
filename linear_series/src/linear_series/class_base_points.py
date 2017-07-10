@@ -1,10 +1,12 @@
 '''
+Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 Created on Aug 4, 2016
 @author: Niels Lubbes
+
+This file declares 2 classes: "BasePointTree" and "BasePoint".
 '''
 from sage.all import *
 
-from class_linear_series import *
 
 class BasePointTree():
     '''

@@ -1,12 +1,13 @@
 '''
+Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 Created on Aug 6, 2016
-
-@author: niels
+@author: Niels Lubbes
 '''
 from sage.all import *
 
 from class_ls_tools import LSTools
 from class_linear_series import *
+
 
 def get_solution_set( ls ):
     '''

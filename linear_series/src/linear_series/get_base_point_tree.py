@@ -1,4 +1,5 @@
 '''
+Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 Created on Aug 4, 2016
 @author: Niels Lubbes
 '''
@@ -9,6 +10,7 @@ from class_ls_tools import LSTools
 from class_poly_ring import *
 from class_linear_series import *
 from class_base_points import *
+
 
 def in_previous_chart( sol, chart ):
     '''
@@ -140,8 +142,7 @@ def get_bp_tree( ls ):
         ValueError( 'Expect "ls.gens()" to be a subset of:', ['z', 'x', 'y', 'v', 'w'] )
     bp_tree.ls = ls
 
-    # get base points for each affine plane chart
-    # of linear series
+    # get base points for each affine plane chart of linear series
     for c in bp_tree.chart_lst:
         ls_c = ls.copy().chart( c )
         bp_tree[c] = get_bp_lst_chart( ls_c, c )

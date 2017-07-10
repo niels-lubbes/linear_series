@@ -1,4 +1,5 @@
 '''
+Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 Created on Aug 6, 2016
 @author: Niels Lubbes
 '''
@@ -7,6 +8,7 @@ from sage.all import *
 from class_ls_tools import LSTools
 from class_poly_ring import *
 from get_linear_series import *
+
 
 
 def get_implicit_image( ls ):
@@ -55,6 +57,9 @@ def get_implicit_image( ls ):
 
 def get_implicit_projection( ls, deg ):
     '''
+    This function does not work properly, since the output polynomial still contains
+    undeterminate variables. These need to be solved.
+    
     INPUT:
         - "ls"  -- LinearSeries s.t. "ls.pol_lst" consist of polynomials in x,y,z 
                    and of the same degree. Note that the polynomials in "ls.pol_lst"
@@ -78,7 +83,7 @@ def get_implicit_projection( ls, deg ):
     x0, x1, x2, x3 = R.gens()[0:4]
     c_lst = R.gens()[4:4 + c_len]
     x, y, z = R.gens()[4 + c_len:]
-    m_lst = get_mon_ls( deg, ( x0, x1, x2, x3 ) )
+    m_lst = get_mon_lst( deg, ( x0, x1, x2, x3 ) )
     R_dict = R.gens_dict()
     R_dict.update( PolyRing.num_field.gens_dict() )
 

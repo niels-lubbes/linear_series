@@ -1,4 +1,5 @@
 '''
+Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 Created on Aug 4, 2016
 @author: Niels Lubbes
 '''
@@ -28,63 +29,63 @@ class LinearSeries:
         self.ring = ring
         self.pol_lst = [self.ring.coerce( pol ) for pol in pol_lst]
 
+
     def get_bp_tree( self ):
         return get_bp_tree( self )
 
+
     def get_solution_set( self ):
         return get_solution_set( self )
+
 
     @staticmethod
     def get( deg, bp_tree ):
         return get_linear_series( deg, bp_tree )
 
+
     def get_implicit_projection( self, deg ):
         return get_implicit_projection( self, deg )
 
+
     def get_implicit_image( self ):
         return get_implicit_image( self )
+
 
     def copy( self ):
         cp_ring = PolyRing( self.gens() )
         cp_pol_lst = cp_ring.coerce( self.pol_lst )
         return LinearSeries( cp_pol_lst, cp_ring )
 
+
     def gens( self ):
         return self.ring.gens()
 
+
     def subs( self, sub_dct ):
+        '''
+        INPUT:
+            - "self"     -- "self.ring" is a PolyRing and "self.polyring" is a list
+                            of polynomials in PolyRing.
+            - "sub_dct"  --  A dictionary with [key] and [value] elements in PolyRing.
+        OUTPUT:
+            - Sets "self.pol_lst" to the list of polynomials in PolyRing where
+              each occurrence of [key] is substituted with [value].   
+        '''
         self.pol_lst = [ self.ring.coerce( pol ) for pol in self.pol_lst ]
         self.pol_lst = [ pol.subs( sub_dct ) for pol in self.pol_lst ]
         return self
 
-    def diff( self, mu, mv ):
-        '''
-        INPUT:
-            - "self" -- "self.pol_lst" are bivariate polynomials in say u and v.
-            - "mu"   -- An integer. 
-            - "mv"   -- An integer.
-        OUTPUT:
-            - "self.pol_lst" is set to
-             
-                [ d_u^{mu}d_v^{mv}(f) for f in "pol_lst"  ] 
-              
-              where d_u(.)=diff(.,u) denotes differentiation w.r.t. u.
-            
-            - Returns "self".
-        '''
-        u, v = self.ring.gens()
-        self.pol_lst = [ diff( pol, u, mu ) for pol in self.pol_lst ]
-        self.pol_lst = [ diff( pol, v, mv ) for pol in self.pol_lst ]
-
-        return self
 
     def chart( self, c_lst ):
         '''        
         INPUT:
             - "self"  -- The polynomials in "self.pol_lst" are assumed 
-                         to be (bi-) homogeneous.
+                         to be (bi-) homogeneous in PolyRing.
             - "c_lst" -- A list of characters where each character  
-                         denotes a generator of the polynomial ring "self.ring". 
+                         denotes a generator of the polynomial ring "self.ring" 
+                         of type PolyRing. For bi-homogeneous polynomials, 
+                         we expect "c_lst" to be a string of length two,
+                         since we can consider a string as a list of characters.                                                    
         OUTPUT:
             - Substitutes {c:1} in polynomials in "self.pol_lst" 
               for all c in "c_lst". 
@@ -104,10 +105,37 @@ class LinearSeries:
 
         return self
 
+
+    def diff( self, mu, mv ):
+        '''
+        INPUT:
+            - "self" -- "self.pol_lst" are bivariate polynomials in PolyRing in say u and v.
+            - "mu"   -- An integer. 
+            - "mv"   -- An integer.
+        OUTPUT:
+            - "self.pol_lst" is set to
+             
+                [ d_u^{mu}d_v^{mv}(f) for f in "pol_lst"  ] 
+              
+              where d_u(.)=diff(.,u) denotes differentiation w.r.t. u.
+              
+              Thus we consider the (multiple) partial derivatives of each polynomial 
+              in "self.pol_lst" wrt the variable u and v.
+            
+            - Returns "self".
+        '''
+        u, v = self.ring.gens()
+        self.pol_lst = [ diff( pol, u, mu ) for pol in self.pol_lst ]
+        self.pol_lst = [ diff( pol, v, mv ) for pol in self.pol_lst ]
+
+        return self
+
+
     def translate_to_origin( self, sol ):
         '''
         INPUT:
             - "sol" -- A 2-tuple of elements in "self.ring.get_num_field()".
+            
         METHOD:
             - Composes each polynomial F in "self.pol_lst" with a
               translation T such that F(p)=(FoT)(0,0) 
@@ -121,21 +149,24 @@ class LinearSeries:
     def blow_up_origin( self, chart ):
         '''
         INPUT:
-            - "self"  -- Polynomials in "self.pol_lst" should be bi-variate and co-prime.
+            - "self"  -- Polynomials in PolyRing in the list "self.pol_lst" 
+                         should be bi-variate and co-prime.
             - "chart" -- Either 's' or 't'.
+            
         OUTPUT:
-            - Returns -- "self" 
-                      -- multiplicity of origin in "self.pol_lst".
+            - Returns the following 2 values:
+                      * "self" 
+                      * multiplicity of origin in "self.pol_lst".
         
             - Additionally "self" is modified as follows.   
             
-              Let (g_i(u,v)) denote the list of polynomials in "self.pol_lst" 
-              indexed by i and in the variables u an v.
+              Let (g_i(u,v))_i denote the list of polynomials in "self.pol_lst" 
+              indexed by i and in the variables u an v. These polynomials are elements
+              in PolyRing.
               
               Let "mul" denote the multiplicity of the linear series at the origin: 
                   mul = deg( gcd( (g_i(u*v,v)_i) ) )
-               
-            
+                           
               If "chart" equals 't' then "self.pol_lst" is modified to
                   ( g_i(u*v,v)*v^{-mul} )_i
               
@@ -155,7 +186,7 @@ class LinearSeries:
                   
                 U_z = { (u,v)x(s:t) | u*t=v*s and g(u,v)=0 } in A^2xP^1,
               
-              thus contained in the fiber product of the affine plane 
+              and thus contained in the fiber product of the affine plane 
               with the projective line.  
                 
               If also t!=0 then we obtain the chart
@@ -199,10 +230,12 @@ class LinearSeries:
 
         return self, 0
 
+
     def quo( self, pol2 ):
         '''
         INPUT:
-            - "pol2" -- A (string of a) polynomial "pol" in "self.ring". 
+            - "pol2" -- A (string of a) polynomial "pol" in PolyRing "self.ring".
+             
         OUTPUT:
             - Polynomials in "self.pol_lst" are replaced with their quotient with "pol2".            
             - Return "self"
@@ -211,6 +244,7 @@ class LinearSeries:
         self.pol_lst = [ self.ring.quo( pol1, pol2 ) for pol1 in self.pol_lst ]
 
         return self
+
 
     # human readable string representation of object
     def __str__( self ):

@@ -1,26 +1,46 @@
 '''
 Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 Created on Jul 6, 2017
+
 @author: Niels Lubbes
 '''
+
 from sage.all import *
+
 from linear_series.class_poly_ring import *
 
 
 class TestClassPolyRing:
 
-    def test__quo__( self ):
+    def test__quo( self ):
 
         ring = PolyRing( 'x,y,z', True )
         ring.ext_num_field( 't^2 + t + 1' )
         ring.ext_num_field( 't^3 + t + a0 + 3' )
 
-        # continue here.
+        pol1 = ring.coerce( '(x+1)*(x^2+a0+1)' )
+        pol2 = ring.coerce( '(x+1)' )
+        assert str( pol1 ) == 'x^3 + x^2 + (a0 + 1)*x + a0 + 1'
+
+        q = ring.quo( pol1, pol2 )
+        assert str( q ) == 'x^2 + a0 + 1'
 
 
+    def test__resultant( self ):
+
+        ring = PolyRing( 'x,y,z', True )
+        ring.ext_num_field( 't^2 + t + 1' )
+        ring.ext_num_field( 't^3 + t + a0 + 3' )
+
+        pol1 = ring.coerce( '(x+1)*(x^2+a0+1)' )
+        pol2 = ring.coerce( 'x^5 + x + a0 + 3' )
+        x = ring.coerce( 'x' )
+
+        r = ring.resultant( pol1, pol2, x )
+        assert str( r ) == '7*a0 + 2'
 
 
-    def test__aux_gcd__xy2_a1y3__y5__x5y5( self ):
+    def test__aux_gcd( self ):
 
         ring = PolyRing( 'x,y,z', True )
         ring.ext_num_field( 't^2 + t + 1' )
@@ -30,10 +50,24 @@ class TestClassPolyRing:
         assert str( agcd ) == '([(y, 2)], [x + a1*y, y^3, x^5*y^3])'
 
 
-    def test__ext_num_field__t2_t_1__t3_t_a0_3( self ):
-        '''
-        Test PolyRing object.
-        '''
+    def test__factor( self ):
+
+        ring = PolyRing( 'x,y,z', True )
+
+        ring.ext_num_field( 't^2 + t + 1' )
+        ring.ext_num_field( 't^3 + t + a0 + 3' )
+
+        pol = ring.coerce( '(x+1)*(x^2+a0+1)' )
+        assert str( pol ) == 'x^3 + x^2 + (a0 + 1)*x + a0 + 1'
+        assert str( factor( pol ) ) == '(x + 1) * (x + a0) * (x - a0)'
+
+        con = ring.coerce( 'a0' )
+        assert str( factor( con ) ) == 'a0'
+
+
+
+    def test__ext_num_field( self ):
+
         ring = PolyRing( 'x,y,z', True )
         assert str( ring ) == 'QQ[x, y, z]'
 
@@ -135,10 +169,12 @@ class TestClassPolyRing:
 
 
 if __name__ == '__main__':
+    # TestClassPolyRing().test__quo()
+    # TestClassPolyRing().test__resultant()
+    # TestClassPolyRing().test__aux_gcd()
+    # TestClassPolyRing().test__factor()
+    # TestClassPolyRing().test__ext_num_field()
     # TestClassPolyRing().test_sage_functionality_for_ext_num_field()
-    TestClassPolyRing().test__aux_gcd__xy2_a1y3__y5__x5y5()
-    TestClassPolyRing().test__ext_num_field__t2_t_1__t3_t_a0_3()
-
 
     pass
 
