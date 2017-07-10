@@ -12,6 +12,12 @@ from linear_series.class_linear_series import *
 
 class TestGetBasePointTree:
 
+    def __clean__( self, s, ch_lst ):
+        for ch in ch_lst:
+            while ch in s:
+                s = s.replace( ch, '' )
+        return s
+
 
     def test__get_base_point_tree( self ):
         ring = PolyRing( 'x,y,z', True )
@@ -26,15 +32,9 @@ class TestGetBasePointTree:
             chart=z, depth=0, mult=1, sol=(-a2 + a0, a2 - a1 - a0), { 2, <<x^2 + a0*y, x + y + a1>>, QQ( <a0|t^2 + 1>, <a1|t^2 + a0*t - 1>, <a2|t^2 - a0*t - a0*a1> )[x, y] }
             chart=z, depth=0, mult=1, sol=(a2, -a2 - a1), { 2, <<x^2 + a0*y, x + y + a1>>, QQ( <a0|t^2 + 1>, <a1|t^2 + a0*t - 1>, <a2|t^2 - a0*t - a0*a1> )[x, y] }
             """
-
-        while '  ' in out or '\t' in out:
-            out = out.replace( '  ', ' ' )
-            out = out.replace( '\t', ' ' )
-
-        while '  ' in chk or '\t' in chk:
-            chk = chk.replace( '  ', ' ' )
-            chk = chk.replace( '\t', ' ' )
-        chk = chk[0:-2]
+        out = self.__clean__( out, [' ', '\n', '\t'] )
+        chk = self.__clean__( chk, [' ', '\n', '\t'] )
+        assert out == chk
 
         assert out == chk
 
