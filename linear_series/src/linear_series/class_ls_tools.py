@@ -31,9 +31,10 @@ class LSTools():
     __start_time = None
     __end_time = None
 
-    # private static variables used by ".verbose()"
+    # private static variables used by ".p()"
+    # If "__filter_fname" is 'NO-OUTPUT' then output is surpressed.
     #
-    __filter_fname = None
+    __filter_fname = 'NO-OUTPUT'
     __prev_filter_fname = None
 
 
@@ -84,6 +85,10 @@ class LSTools():
               all output is send to "sys.stdout".  
                                    
         '''
+        # check whether to surpress output
+        if LSTools.__filter_fname == 'NO-OUTPUT':
+            return
+
         # collect relevant info from stack trace
         sk_lst_lst = inspect.stack()
         file_name = str( sk_lst_lst[1][1] )

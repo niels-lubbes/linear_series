@@ -8,17 +8,32 @@ This library depends on [SageMath](https://SageMath.org) libraries.
 
 ## Installation
 
-TODO
+* Install Sage from [SageMath](https://SageMath.org) 
+* Type the following commands in your commandline. 
+  We assume that `sage` is accessible from your commandline interface.
+    
+    sage -pip install linear_series
+    sage -pip install --upgrade linear_series
+    sage -pip show --files linear_series
+    
+* To execute some [usecases](https://github.com/niels-lubbes/linear_series/blob/master/linear_series/src/linear_series/__main__.py) type
+    
+    sage -python -m linear_series
 
 ## Examples
 
 See also [this file](https://github.com/niels-lubbes/linear_series/blob/master/linear_series/src/linear_series/__main__.py) 
-for examples. 
+for example usecases. 
+
+For running the examples below, either copy paste the code into the Sage interface or run them as a Python module:
+
+    sage -python -m my_module_name.py
+
 
 __Example 1: Base point analysis of linear series of curves in projective plane__
 
-    from class_poly_ring import *
-    from class_linear_series import *    
+    from linear_series.class_poly_ring import PolyRing
+    from linear_series.class_linear_series import LinearSeries    
     ls = LinearSeries( ['x^2', 'x*z + y^2'], PolyRing( 'x,y,z', True ) )
     bp_tree = ls.get_bp_tree()
     print( bp_tree )
@@ -33,8 +48,8 @@ Output:
 
 __Example 2: Base point analysis of linear series defined over number field__
 
-    from class_poly_ring import *
-    from class_linear_series import *    
+    from linear_series.class_poly_ring import PolyRing
+    from linear_series.class_linear_series import LinearSeries      
     ring = PolyRing( 'x,y,z', True )
     ring.ext_num_field( 't^2 + 1' )
     ring.ext_num_field( 't^3 + a0' )
@@ -50,8 +65,8 @@ Output:
 
 __Example 3: Base point analysis of linear series of curves in P^1xP^1__
 
-    from class_poly_ring import *
-    from class_linear_series import *    
+    from linear_series.class_poly_ring import PolyRing
+    from linear_series.class_linear_series import LinearSeries      
     ls = LinearSeries( ['x*v-y*w', 'y*v+x*w' ], PolyRing( 'x,y,v,w' ) )
     bp_tree = ls.get_bp_tree()
     print( bp_tree )
@@ -64,8 +79,9 @@ Output:
 
 __Example 4: Creating linear series of degree 2 curves in the projective plane__
 
-    from class_base_points import *
-    from class_linear_series import *   
+    from linear_series.class_poly_ring import PolyRing
+    from linear_series.class_base_points import BasePointTree
+    from linear_series.class_linear_series import LinearSeries   
     PolyRing.reset_base_field()
     bp_tree = BasePointTree()
     bp = bp_tree.add( 'z', ( 0, 0 ), 1 )
@@ -79,8 +95,9 @@ Output:
     { 2, <<x^2, y^2 + x*z>>, QQ[x, y, z] }
 __Example 5: Creating linear series of bi-degree (1,1) curves in P^1xP^1__     
 
-    from class_base_points import *
-    from class_linear_series import *   
+    from linear_series.class_poly_ring import PolyRing
+    from linear_series.class_base_points import BasePointTree
+    from linear_series.class_linear_series import LinearSeries  
     ring = PolyRing( 'x,y,v,w', True )
     ring.ext_num_field( 't^2 + 1' )
     a0 = ring.root_gens()[0]
@@ -98,8 +115,9 @@ __Example 6: Implicitizing parametric image of linear series__
 We first create a linear series of bi-degree (2,2) curves in P^1xP^1. We consider the resulting linear series 
 defined by 7 homogeneous polynomials, as a map from P^1xP^1 into P^6. We implicitize the image of this map.
 
-    from class_base_points import *
-    from class_linear_series import *   
+    from linear_series.class_poly_ring import PolyRing
+    from linear_series.class_base_points import BasePointTree
+    from linear_series.class_linear_series import LinearSeries  
     ring = PolyRing( 'x,y,v,w', True )
     ring.ext_num_field( 't^2 + 1' )
     a0 = ring.root_gens()[0]

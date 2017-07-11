@@ -9,20 +9,14 @@ https://pypi.python.org/pypi?%3Aaction=list_classifiers
 
 from setuptools import setup
 
-
-def readme():
-    with open( 'README.md' ) as f:
-        return f.read()
-
-
 setup( name = 'linear_series',
-       version = '1.0',
+       version = '3',
        description = 'Base point analysis for linear series of curves in the plane',
-       long_description = readme(),
        classifiers = [
            'Development Status :: 3 - Alpha',
            'License :: OSI Approved :: MIT License',
-           'Programming Language :: Python :: 3.6',
+           'Programming Language :: Python :: 2',
+           'Programming Language :: Python :: 3',
            'Topic :: Scientific/Engineering :: Mathematics',
            ],
       keywords = 'linear series',
