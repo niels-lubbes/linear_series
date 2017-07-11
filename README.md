@@ -3,7 +3,8 @@
 
 ## Introduction
 
-Linear series is a Python library for base point analysis for linear series of curves in the plane. This library depends on SageMath.org libraries.
+Linear series is a Python library for base point analysis for linear series of curves in the plane. 
+This library depends on [SageMath](https://SageMath.org) libraries.
 
 ## Installation
 
@@ -11,9 +12,10 @@ TODO
 
 ## Examples
 
-See "__main__.py" for more examples. 
+See also [this file](https://github.com/niels-lubbes/linear_series/blob/master/linear_series/src/linear_series/__main__.py) 
+for examples. 
 
-### Example 1: Base point analysis of linear series of curves in projective plane
+__Example 1: Base point analysis of linear series of curves in projective plane__
 
     from class_poly_ring import *
     from class_linear_series import *    
@@ -29,7 +31,7 @@ Output:
             chart=t, depth=2, mult=1, sol=(-1, 0), { 2, <<x^2*y^2, x + 1>>, QQ[x, y] }
                 chart=t, depth=3, mult=1, sol=(0, 0), { 2, <<x^2*y^3 - 2*x*y^2 + y, x>>, QQ[x, y] } 
 
-### Example 2: Base point analysis of linear series of curves in projective plane P^2 over number field
+__Example 2: Base point analysis of linear series defined over number field__
 
     from class_poly_ring import *
     from class_linear_series import *    
@@ -46,7 +48,7 @@ Output:
     chart=z, depth=0, mult=1, sol=(-a2 + a0, a2 - a1 - a0), { 2, <<x^2 + a0*y, x + y + a1>>, QQ( <a0|t^2 + 1>, <a1|t^2 + a0*t - 1>, <a2|t^2 - a0*t - a0*a1> )[x, y] }
     chart=z, depth=0, mult=1, sol=(a2, -a2 - a1), { 2, <<x^2 + a0*y, x + y + a1>>, QQ( <a0|t^2 + 1>, <a1|t^2 + a0*t - 1>, <a2|t^2 - a0*t - a0*a1> )[x, y] } 
 
-### Example 3: Base point analysis of linear series of curves in P^1xP^1
+__Example 3: Base point analysis of linear series of curves in P^1xP^1__
 
     from class_poly_ring import *
     from class_linear_series import *    
@@ -60,7 +62,7 @@ Output:
     chart=xv, depth=0, mult=1, sol=(a0, (-a0)), { 2, <<-y*w + 1, y + w>>, QQ( <a0|t^2 + 1> )[y, w] }
     chart=xv, depth=0, mult=1, sol=(-a0, (a0)), { 2, <<-y*w + 1, y + w>>, QQ( <a0|t^2 + 1> )[y, w] } 
 
-### Example 4: Creating linear series of degree 2 curves in the projective plane
+__Example 4: Creating linear series of degree 2 curves in the projective plane__
 
     from class_base_points import *
     from class_linear_series import *   
@@ -75,7 +77,7 @@ Output:
 Output:
 
     { 2, <<x^2, y^2 + x*z>>, QQ[x, y, z] }
-### Example 5: Creating linear series of bi-degree (1,1) curves in P^1xP^1     
+__Example 5: Creating linear series of bi-degree (1,1) curves in P^1xP^1__     
 
     from class_base_points import *
     from class_linear_series import *   
@@ -90,7 +92,9 @@ Output:
 Output:    
     
     { 2, <<x*v - y*w, y*v + x*w>>, QQ( <a0|t^2 + 1> )[x, y, v, w] }        
-### Example 6: Implicitizing parametric image of linear series
+
+__Example 6: Implicitizing parametric image of linear series__
+
 We first create a linear series of bi-degree (2,2) curves in P^1xP^1. We consider the resulting linear series 
 defined by 7 homogeneous polynomials, as a map from P^1xP^1 into P^6. We implicitize the image of this map.
 
