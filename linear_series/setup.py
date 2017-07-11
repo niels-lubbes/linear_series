@@ -7,7 +7,6 @@ https://python-packaging.readthedocs.io/en/latest/minimal.html
 https://pypi.python.org/pypi?%3Aaction=list_classifiers
 '''
 
-
 from setuptools import setup
 
 
@@ -23,17 +22,15 @@ setup( name = 'linear_series',
        classifiers = [
            'Development Status :: 3 - Alpha',
            'License :: OSI Approved :: MIT License',
-           'Programming Language :: Python :: 2.7',
+           'Programming Language :: Python :: 3.6',
            'Topic :: Scientific/Engineering :: Mathematics',
            ],
       keywords = 'linear series',
-      url = 'http://github.com/niels-lubbes/linkage',
+      url = 'http://github.com/niels-lubbes/linear_series',
       author = 'Niels Lubbes',
       license = 'MIT',
       package_dir = {'': 'src'},
       packages = ['linear_series'],
-      # install_requires = ['markdown'],
-      # dependency_links = ['http://github.com/niels-lubbes/linear_series/tarball/master#egg=package-1.0'],
       test_suite = 'nose.collector',
       tests_require = ['nose'],
       entry_points = {
