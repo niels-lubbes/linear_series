@@ -31,13 +31,13 @@ For running the examples below, either copy paste the code into the Sage interfa
 
 
 __Example 1: Base point analysis of linear series of curves in projective plane__
-
+```python
     from linear_series.class_poly_ring import PolyRing
     from linear_series.class_linear_series import LinearSeries    
     ls = LinearSeries( ['x^2', 'x*z + y^2'], PolyRing( 'x,y,z', True ) )
     bp_tree = ls.get_bp_tree()
     print( bp_tree )
-
+```
 Output:
 
     { 2, <<x^2, y^2 + x*z>>, QQ[x, y, z] }
