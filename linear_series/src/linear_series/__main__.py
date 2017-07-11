@@ -138,6 +138,7 @@ def usecase__get_linear_series__P2():
     '''
 
     # Example from PhD thesis (page 159).
+    PolyRing.reset_base_field()
     bp_tree = BasePointTree()
     bp = bp_tree.add( 'z', ( 0, 0 ), 1 )
     bp = bp.add( 't', ( 0, 0 ), 1 )
@@ -242,7 +243,7 @@ def usecase__get_implicit__DP6():
     # implicit image in projective 6-space
     # of map associated to linear series
     #
-    imp_lst = get_implicit_image( ls )
+    imp_lst = ls.get_implicit_image()
     LSTools.p( 'implicit equations =', imp_lst )
 
     #

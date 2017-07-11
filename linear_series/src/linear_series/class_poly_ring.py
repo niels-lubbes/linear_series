@@ -37,8 +37,7 @@ class PolyRing:
 
         # reset static num_field variable
         if reset_num_field:
-            PolyRing.num_field = QQ
-            PolyRing.root_lst = []
+            PolyRing.reset_base_field()
 
         # Polynomial ring over an algebraic number field.
         self.pol_ring = PolynomialRing( PolyRing.num_field, var_lst )
@@ -49,6 +48,16 @@ class PolyRing:
         # update dictionary
         self.ring_dct['t'] = PolynomialRing( PolyRing.num_field, 't' ).gens()[0]
         self.__update_ring_dct()
+
+
+    @staticmethod
+    def reset_base_field():
+        '''
+        OUTPUT:
+            - Resets base field of this polynomial ring to QQ.
+        '''
+        PolyRing.num_field = QQ
+        PolyRing.root_lst = []
 
 
     def __update_ring_dct( self ):
