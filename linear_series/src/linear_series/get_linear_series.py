@@ -18,6 +18,14 @@ def get_ls_lst( ls, bp_lst ):
     '''
     ls_lst = []
     for bp in bp_lst:
+
+        # base points which do not have multiplicity at least
+        # can be ignored
+        #
+        if bp.mult <= 0: continue
+
+        # translate the base point to the origin
+        #
         nls = ls.copy().translate_to_origin( bp.sol )
 
         #
