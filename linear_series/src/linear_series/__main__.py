@@ -14,7 +14,6 @@ from class_base_points import *
 from get_implicit import *
 
 
-
 def usecase__get_base_points__P2():
     '''
     We obtain (infinitely near) base points of a 
@@ -340,6 +339,23 @@ def usecase__get_implicit__DP6():
     LSTools.p( 'J                                          =', list( J ) )
 
 
+def usecase__get_base_points__and__get_linear_series():
+    '''
+    We obtain (infinitely near) base points of a 
+    linear series defined over QQ. The base points
+    are defined over a number field.
+    '''
+
+    ring = PolyRing( 'x,y,z', True )
+    ls = LinearSeries( ['x^2+y^2', 'y^2+x*z'], ring )
+    bp_tree = ls.get_bp_tree()
+    LSTools.p( bp_tree )
+
+    ls = LinearSeries.get( 2, bp_tree )
+    LSTools.p( ls )
+    LSTools.p( ls.get_bp_tree() )
+
+
 if __name__ == '__main__':
 
     LSTools.start_timer()
@@ -357,6 +373,7 @@ if __name__ == '__main__':
     usecase__get_linear_series__P2()  # shows how to construct a linear series in P^2 from given base points
     usecase__get_linear_series__P1P1_DP6()  # shows how to construct a linear series in P^1xP^1 from given base points
     usecase__get_implicit__DP6()  # shows how to compute the ideal of the surface parametrized by the linear series
+    usecase__get_base_points__and__get_linear_series()  # another easy example for getting base points and linear series
 
     ###############################################
     #                                             #
