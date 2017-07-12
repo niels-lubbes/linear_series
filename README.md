@@ -22,7 +22,7 @@ sage -python -m linear_series
 ```
 
 * The following commands show which files were installed and
-how to upgrade the linear series package.
+how to upgrade the `linear_series` package.
 ```
 sage -pip show --files linear_series
 sage -pip install --upgrade linear_series
