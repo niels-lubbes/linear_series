@@ -7,14 +7,10 @@ Created on Jul 10, 2017
 from sage.all import *
 
 from linear_series.class_base_points import *
+from class_test_tools import TestTools
 
-class TestBasePoints:
 
-    def __clean__( self, s, ch_lst ):
-        for ch in ch_lst:
-            while ch in s:
-                s = s.replace( ch, '' )
-        return s
+class TestBasePoints( TestTools ):
 
     def test__BasePointTree( self ):
 
@@ -31,13 +27,9 @@ class TestBasePoints:
                         chart=t, depth=2, mult=1, sol=(-1, 0), None
                             chart=t, depth=3, mult=1, sol=(0, 0), None        
               """
-        out = self.__clean__( out, [' ', '\n', '\t'] )
-        chk = self.__clean__( chk, [' ', '\n', '\t'] )
-        assert out == chk
+        assert self.equal_output_strings( out, chk )
 
 
 if __name__ == '__main__':
-
-    TestBasePoints().test__BasePointTree()
-
+    # TestBasePoints().test__BasePointTree()
     pass

@@ -53,7 +53,5 @@ class TestGetSolutionSet:
         # -----------------------------------------------
 
 if __name__ == '__main__':
-
     # TestGetSolutionSet().test__get_solution_set()
-
     pass
