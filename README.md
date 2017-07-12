@@ -9,16 +9,24 @@ This library depends on [SageMath](https://SageMath.org) libraries.
 ## Installation
 
 * Install Sage from [SageMath](https://SageMath.org) 
+
 * Type the following commands in your commandline. 
-  We assume that `sage` is accessible from your commandline interface.
+We assume that `sage` is accessible from your commandline interface.
 ```    
 sage -pip install linear_series
-sage -pip install --upgrade linear_series
-sage -pip show --files linear_series
 ```    
+
 * To execute some [usecases](https://github.com/niels-lubbes/linear_series/blob/master/linear_series/src/linear_series/__main__.py) type
-    
-    sage -python -m linear_series
+```    
+sage -python -m linear_series
+```
+
+* The following commands show which files were installed and
+how to upgrade the linear series package.
+```
+sage -pip show --files linear_series
+sage -pip install --upgrade linear_series
+```
 
 ## Examples
 
