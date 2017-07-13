@@ -10,8 +10,8 @@ https://pypi.python.org/pypi?%3Aaction=list_classifiers
 from setuptools import setup
 
 setup( name = 'linear_series',
-       version = '3',
-       description = 'Base point analysis for linear series of curves in the plane',
+       version = '4',
+       description = 'Base point analysis for linear series of curves in the plane.',
        classifiers = [
            'Development Status :: 3 - Alpha',
            'License :: OSI Approved :: MIT License',
