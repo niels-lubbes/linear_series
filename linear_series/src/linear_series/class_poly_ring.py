@@ -3,9 +3,20 @@ Use of this source code is governed by a MIT-style license that can be found in 
 Created on Aug 4, 2016
 @author: Niels Lubbes
 '''
-from sage.all import *
 
 from class_ls_tools import LSTools
+
+
+from sage_interface import sage_QQ
+from sage_interface import sage__eval
+from sage_interface import sage_PolynomialRing
+
+from sage_interface import sage_factor
+from sage_interface import sage_gcd
+from sage_interface import sage_expand
+from sage_interface import sage_SR
+from sage_interface import sage_NumberField
+from sage_interface import sage_FractionField
 
 
 class PolyRing:
@@ -16,7 +27,7 @@ class PolyRing:
     will contain roots, that were previously added.     
     '''
     # Initially the number field is the rational numbers (static).
-    num_field = QQ
+    num_field = sage_QQ
 
     # List of roots in number field that are adjoined to QQ (static).
     # This list is used in "PolyRing.__str__()" for the human readable output format.
@@ -40,13 +51,13 @@ class PolyRing:
             PolyRing.reset_base_field()
 
         # Polynomial ring over an algebraic number field.
-        self.pol_ring = PolynomialRing( PolyRing.num_field, var_lst )
+        self.pol_ring = sage_PolynomialRing( PolyRing.num_field, var_lst )
 
-        # Usage: sage_eval('<element in pol_ring>', ring_dct)
+        # Usage: sage__eval('<element in pol_ring>', ring_dct)
         self.ring_dct = {}
 
         # update dictionary
-        self.ring_dct['t'] = PolynomialRing( PolyRing.num_field, 't' ).gens()[0]
+        self.ring_dct['t'] = sage_PolynomialRing( PolyRing.num_field, 't' ).gens()[0]
         self.__update_ring_dct()
 
 
@@ -56,7 +67,7 @@ class PolyRing:
         OUTPUT:
             - Resets base field of this polynomial ring to QQ.
         '''
-        PolyRing.num_field = QQ
+        PolyRing.num_field = sage_QQ
         PolyRing.root_lst = []
 
 
@@ -67,7 +78,7 @@ class PolyRing:
         "self" are modified.
         '''
         PolyRing.num_field = self.get_num_field()
-        if PolyRing.num_field != QQ:  # do not add {'1':1}
+        if PolyRing.num_field != sage_QQ:  # do not add {'1':1}
             self.ring_dct.update( self.get_num_field().gens_dict() )
         self.ring_dct.update( self.pol_ring.gens_dict() )
         self.ring_dct['t'] = self.ring_dct['t'].parent().change_ring( self.get_num_field() ).gens()[0]
@@ -101,7 +112,7 @@ class PolyRing:
             - Modifies "self.pol_ring" to be a PolynomialRing with 
               generators "new_gens" over the same number field as before.
         '''
-        self.pol_ring = PolynomialRing( self.get_num_field(), new_gens )
+        self.pol_ring = sage_PolynomialRing( self.get_num_field(), new_gens )
         self.__update_ring_dct()
 
 
@@ -130,7 +141,7 @@ class PolyRing:
         OUTPUT:
             - Coerces the string "elt" to an element of "self.pol_ring".
         '''
-        return sage_eval( str( elt ), self.ring_dct )
+        return sage__eval( str( elt ), self.ring_dct )
 
 
     def coerce_ff( self, elt ):
@@ -152,19 +163,19 @@ class PolyRing:
         eval_dct = {}
 
         # construct fraction field FF
-        FF = QQ
-        if PolyRing.num_field != QQ:
+        FF = sage_QQ
+        if PolyRing.num_field != sage_QQ:
             ngens = PolyRing.num_field.gens_dict().keys()  # (a0,a1,...)
-            FF = FractionField( PolynomialRing( QQ, ngens ) )
+            FF = sage_FractionField( sage_PolynomialRing( sage_QQ, ngens ) )
             eval_dct.update( FF.gens_dict() )
 
         # construct polynomial ring R over FF
         pgens = self.pol_ring.gens_dict().keys()
-        R = PolynomialRing( FF, pgens )
+        R = sage_PolynomialRing( FF, pgens )
         eval_dct.update( R.gens_dict() )
 
         # coerce "elt" to R
-        return sage_eval( str( elt ), eval_dct )
+        return sage__eval( str( elt ), eval_dct )
 
 
     def coerce_sr( self, elt ):
@@ -185,10 +196,10 @@ class PolyRing:
         # construct dictionary for "sage_eval"
         sym_dct = self.ring_dct.copy()
         for key in sym_dct.keys():
-            sym_dct[key] = SR( str( sym_dct[key] ) )  # SR = Symbolic Ring
+            sym_dct[key] = sage_SR( str( sym_dct[key] ) )  # SR = Symbolic Ring
 
         # coerce "elt" to symbolic ring
-        return sage_eval( str( elt ), sym_dct )
+        return sage__eval( str( elt ), sym_dct )
 
 
     def quo( self, pol1, pol2 ):
@@ -222,7 +233,7 @@ class PolyRing:
         # computing the resultant over a number field.
         spol1, spol2, svar = self.coerce_ff( [pol1, pol2, var] )
 
-        if spol1 in QQ or spol2 in QQ:
+        if spol1 in sage_QQ or spol2 in sage_QQ:
             sres = -1
         else:
             sres = spol1.resultant( spol2, svar )
@@ -256,12 +267,12 @@ class PolyRing:
         LSTools.p( spol_lst )
 
         # compute gcd and factor in symbolic ring
-        sgcd = gcd( spol_lst )
+        sgcd = sage_gcd( spol_lst )
         sfct_lst = sgcd.factor_list()
         LSTools.p( sgcd, sfct_lst )
 
         # factor out gcd in polynomials
-        spol_lst = [ expand( spol / sgcd ) for spol in spol_lst]
+        spol_lst = [ sage_expand( spol / sgcd ) for spol in spol_lst]
 
         # coerce back
         fct_lst, npol_lst = self.coerce( [sfct_lst, spol_lst] )
@@ -291,7 +302,7 @@ class PolyRing:
         if pol in self.get_num_field():
             return []
         else:
-            return factor( pol )
+            return sage_factor( pol )
 
         #
         # The call "factor(pol)" sometimes raises the following warning:
@@ -332,7 +343,7 @@ class PolyRing:
         else:
             # obtain extended number field with first factor
             gen_str = 'a' + str( len( self.root_lst ) )
-            NF = NumberField( [first_pol], gen_str )
+            NF = sage_NumberField( [first_pol], gen_str )
 
             # update self
             self.set_num_field( NF )

@@ -5,13 +5,19 @@ Created on Aug 6, 2016
 @author: Niels Lubbes
 '''
 
-from sage.all import *
-
 from class_ls_tools import LSTools
-from class_poly_ring import *
-from class_linear_series import *
-from class_base_points import *
-from get_implicit import *
+from class_poly_ring import PolyRing
+from class_linear_series import LinearSeries
+from class_base_points import BasePointTree
+
+from sage_interface import sage_ZZ
+from sage_interface import sage_QQ
+from sage_interface import sage_invariant_theory
+from sage_interface import sage__eval
+from sage_interface import sage_PolynomialRing
+from sage_interface import sage_matrix
+from sage_interface import sage_diagonal_matrix
+from sage_interface import sage_vector
 
 
 def usecase__get_base_points__P2():
@@ -248,9 +254,9 @@ def usecase__get_implicit__DP6():
     #
     # compute Hilbert polynomial in QQ[x0,...,x6]
     #
-    ring = PolynomialRing( QQ, [ 'x' + str( i ) for i in range( 7 )] )
+    ring = sage_PolynomialRing( sage_QQ, [ 'x' + str( i ) for i in range( 7 )] )
     x_lst = ring.gens()
-    imp_lst = sage_eval( str( imp_lst ), ring.gens_dict() )
+    imp_lst = sage__eval( str( imp_lst ), ring.gens_dict() )
     hpol = ring.ideal( imp_lst ).hilbert_polynomial()
     hdeg = hpol.diff().diff()
     LSTools.p( 'Hilbert polynomial =', hpol )
@@ -260,7 +266,7 @@ def usecase__get_implicit__DP6():
     # equation of unit sphere is not in the ideal
     #
     s_pol = sum( [-x_lst[0] ** 2] + [x ** 2 for x in x_lst[1:]] )
-    LSTools.p( 'Inside sphere?: ', s_pol in ideal( imp_lst ) )
+    LSTools.p( 'Inside sphere?: ', s_pol in ring.ideal( imp_lst ) )
 
     #
     # compute random quadrics containing del Pezzo surface
@@ -277,7 +283,7 @@ def usecase__get_implicit__DP6():
         if c_lst == []:
             lst = [-1, 0, 1]
             for imp in imp_lst:
-                idx = int( ZZ.random_element( 0, len( lst ) ) )
+                idx = int( sage_ZZ.random_element( 0, len( lst ) ) )
                 c_lst += [ lst[idx] ]
 
         # obtain quadric in ideal from "c_lst"
@@ -286,9 +292,9 @@ def usecase__get_implicit__DP6():
         M_pol = sum( M_pol )
 
         # eigendecomposition
-        M = invariant_theory.quadratic_form( M_pol, x_lst ).as_QuadraticForm().matrix()
-        M = matrix( QQ, M )
-        vx = vector( x_lst )
+        M = sage_invariant_theory.quadratic_form( M_pol, x_lst ).as_QuadraticForm().matrix()
+        M = sage_matrix( sage_QQ, M )
+        vx = sage_vector( x_lst )
         D, V = M.eigenmatrix_right()
 
         # determine signature of quadric
@@ -311,21 +317,21 @@ def usecase__get_implicit__DP6():
     # diagonal orthonormalization
     # note: M == W.T*D*W == W.T*L.T*J*L*W = U.T*J*U
     #
-    W = matrix( [col / col.norm() for col in V.columns()] )
+    W = sage_matrix( [col / col.norm() for col in V.columns()] )
     J = []
     for d in D.diagonal():
         if d > 0:
             J += [1]
         elif d < 0:
             J += [-1]
-    J = diagonal_matrix( J )
-    L = diagonal_matrix( [ d.abs().sqrt() for d in D.diagonal()] )
+    J = sage_diagonal_matrix( J )
+    L = sage_diagonal_matrix( [ d.abs().sqrt() for d in D.diagonal()] )
     U = L * W
 
     #
     # Do some tests
     #
-    assert M_pol in ideal( imp_lst )
+    assert M_pol in ring.ideal( imp_lst )
     assert vx * M * vx == M_pol
     assert M * V == V * D
 

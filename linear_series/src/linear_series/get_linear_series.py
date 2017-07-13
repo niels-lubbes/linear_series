@@ -3,13 +3,17 @@ Use of this source code is governed by a MIT-style license that can be found in 
 Created on Aug 6, 2016
 @author: Niels Lubbes
 
-The method "get_linear_series()" should be called from LinearSeries.get().
+The method "get_linear_series()" should be called from "LinearSeries.get()".
 '''
-from sage.all import *
 
 from class_ls_tools import LSTools
-from class_poly_ring import *
+from class_poly_ring import PolyRing
+import class_linear_series
 
+from sage_interface import sage__eval
+from sage_interface import sage_Compositions
+from sage_interface import sage_matrix
+from sage_interface import sage_vector
 
 
 def get_ls_lst( ls, bp_lst ):
@@ -32,7 +36,7 @@ def get_ls_lst( ls, bp_lst ):
         # Loop through (a,b) s.t.
         # (a-1)+(b-1)=bp.mult-1 and (a-1)>=(b-1)>=0
         #
-        for a, b in Compositions( bp.mult - 1 + 2, length = 2 ):
+        for a, b in sage_Compositions( bp.mult - 1 + 2, length = 2 ):
             ls_lst += [ nls.copy().diff( a - 1, b - 1 ) ]
 
         #
@@ -66,12 +70,12 @@ def get_mon_lst( deg, g_lst ):
     mon_lst = []
     if len( g_lst ) == 4:
         x, y, v, w = g_lst
-        for a, b, c, d in Compositions( 2 * deg + 4, length = 4 ):
+        for a, b, c, d in sage_Compositions( 2 * deg + 4, length = 4 ):
             if a + b == deg + 2 and c + d == deg + 2:
                 mon_lst += [ x ** ( a - 1 ) * y ** ( b - 1 ) * v ** ( c - 1 ) * w ** ( d - 1 ) ]
     elif len( g_lst ) == 3:
         x, y, z = g_lst
-        for a, b, c  in Compositions( deg + 3, length = 3 ):
+        for a, b, c  in sage_Compositions( deg + 3, length = 3 ):
             mon_lst += [ x ** ( a - 1 ) * y ** ( b - 1 ) * z ** ( c - 1 ) ]
     else:
         raise ValueError( 'Expect either 3 or 4 generators:', g_lst )
@@ -96,13 +100,6 @@ def get_linear_series( deg, bp_tree ):
     '''
 
     #
-    # Uncomment the following line in order to prevent
-    #     "NameError: global name 'LinearSeries' is not defined"
-    # although it will give a warning that imports are not allowed at this place.
-    #
-    from class_linear_series import *
-
-    #
     # Obtain generators of polynomial ring from "bp_tree.chart_lst"
     # Note that for initializing PolyRing, it is important that the
     # base field is not reset to the rationals QQ. The input "bp_tree"
@@ -120,7 +117,7 @@ def get_linear_series( deg, bp_tree ):
     # monomials of degree "deg" or bidegree ("deg","deg").
     #
     mon_lst = get_mon_lst( deg, ring.gens() )
-    ls = LinearSeries( mon_lst, ring )
+    ls = class_linear_series.LinearSeries( mon_lst, ring )
 
     #
     # For each chart "c" we obtain a list of linear series.
@@ -139,16 +136,16 @@ def get_linear_series( deg, bp_tree ):
         LSTools.p( ls )
         for g in ls.ring.gens():
             ls.subs( {g:0} )
-        row = sage_eval( str( ls.pol_lst ), PolyRing.num_field.gens_dict() )
+        row = sage__eval( str( ls.pol_lst ), PolyRing.num_field.gens_dict() )
         row_lst += [row]
     LSTools.p( row_lst )
-    LSTools.p( matrix( row_lst ).parent(), '\n' + matrix( row_lst ).str() )
+    LSTools.p( sage_matrix( row_lst ).parent(), '\n' + sage_matrix( row_lst ).str() )
 
     #
     # Compute kernel.
     #
-    kern = list( matrix( row_lst ).right_kernel().matrix() )
-    LSTools.p( matrix( kern ).parent(), '\n' + matrix( kern ).str() )
+    kern = list( sage_matrix( row_lst ).right_kernel().matrix() )
+    LSTools.p( sage_matrix( kern ).parent(), '\n' + sage_matrix( kern ).str() )
     LSTools.p( len( mon_lst ), mon_lst )
 
     #
@@ -156,9 +153,9 @@ def get_linear_series( deg, bp_tree ):
     #
     mon_lst = ring.coerce( mon_lst )  # update w.r.t. PolyRing.num_field
     kern = ring.coerce( kern )
-    pol_lst = matrix( kern ) * vector( mon_lst )
+    pol_lst = sage_matrix( kern ) * sage_vector( mon_lst )
     LSTools.p( pol_lst )
 
-    return LinearSeries( pol_lst, ring )
+    return class_linear_series.LinearSeries( pol_lst, ring )
 
 

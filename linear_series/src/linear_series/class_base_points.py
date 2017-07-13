@@ -5,8 +5,6 @@ Created on Aug 4, 2016
 
 This file declares 2 classes: "BasePointTree" and "BasePoint".
 '''
-from sage.all import *
-
 
 class BasePointTree():
     '''

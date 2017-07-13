@@ -51,7 +51,6 @@ class TestGetLinearSeries( TestTools ):
         ls = LinearSeries( ['x^2+y^2', 'y^2+x*z'], ring )
         bp_tree_1 = ls.get_bp_tree()
 
-
         ls = LinearSeries.get( 2, bp_tree_1 )
         bp_tree_2 = ls.get_bp_tree()
 
@@ -65,6 +64,6 @@ if __name__ == '__main__':
     # TestGetLinearSeries().test__get_mon_lst__1_xyvw()
     # TestGetLinearSeries().test__get_mon_lst__2_xyvw()
     # TestGetLinearSeries().test__get_linear_series__1()
-    TestGetLinearSeries().test__get_linear_series__2()
+    # TestGetLinearSeries().test__get_linear_series__2()
 
     pass

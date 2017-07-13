@@ -3,13 +3,15 @@ Use of this source code is governed by a MIT-style license that can be found in 
 Created on Aug 4, 2016
 @author: Niels Lubbes
 '''
-from sage.all import *
 
-from class_poly_ring import *
-from get_base_point_tree import *
-from get_solution_set import *
-from get_linear_series import *
-from get_implicit import *
+from class_poly_ring import PolyRing
+from get_base_point_tree import get_bp_tree
+from get_solution_set import get_solution_set
+from get_linear_series import get_linear_series
+from get_implicit import get_implicit_projection
+from get_implicit import get_implicit_image
+
+from sage_interface import sage_diff
 
 class LinearSeries:
     '''
@@ -125,8 +127,8 @@ class LinearSeries:
             - Returns "self".
         '''
         u, v = self.ring.gens()
-        self.pol_lst = [ diff( pol, u, mu ) for pol in self.pol_lst ]
-        self.pol_lst = [ diff( pol, v, mv ) for pol in self.pol_lst ]
+        self.pol_lst = [ sage_diff( pol, u, mu ) for pol in self.pol_lst ]
+        self.pol_lst = [ sage_diff( pol, v, mv ) for pol in self.pol_lst ]
 
         return self
 

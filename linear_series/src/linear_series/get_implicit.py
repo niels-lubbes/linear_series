@@ -2,13 +2,27 @@
 Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 Created on Aug 6, 2016
 @author: Niels Lubbes
+
+The method "get_implicit_image()" should be called from 
+"LinearSeries.get_implicit_image()".
+
+The method "get_implicit_projection()" should be called from 
+"LinearSeries.get_implicit_projection()".
 '''
-from sage.all import *
+
+import warnings
 
 from class_ls_tools import LSTools
-from class_poly_ring import *
-from get_linear_series import *
+from class_poly_ring import PolyRing
+from get_linear_series import get_mon_lst
 
+from sage_interface import sage__eval
+from sage_interface import sage_PolynomialRing
+from sage_interface import sage_QQ
+from sage_interface import sage_SR
+from sage_interface import sage_expand
+from sage_interface import sage_Compositions
+from sage_interface import sage_solve
 
 
 def get_implicit_image( ls ):
@@ -31,12 +45,12 @@ def get_implicit_image( ls ):
 
     # QQ[x0,...,xn]
     vx_lst = [ 'x' + str( i ) for i in range( len( ls.pol_lst ) )]
-    ring = PolynomialRing( QQ, vx_lst + list( ls.ring.gens() ) )
+    ring = sage_PolynomialRing( sage_QQ, vx_lst + list( ls.ring.gens() ) )
     x_lst = ring.gens()[0:len( vx_lst )]
     v_lst = ring.gens()[len( vx_lst ):]
 
     # coerce "ls.pol_lst""
-    p_lst = [ sage_eval( str( pol ), ring.gens_dict() ) for pol in ls.pol_lst ]
+    p_lst = [ sage__eval( str( pol ), ring.gens_dict() ) for pol in ls.pol_lst ]
 
     # construct ideal
     s_lst = [ x_lst[i] - p_lst[i] for i in range( len( p_lst ) )]
@@ -76,10 +90,10 @@ def get_implicit_projection( ls, deg ):
     p0, p1, p2, p3 = ls.pol_lst[0:4]
 
     # construct a polynomial ring
-    c_len = len( Compositions( deg + 4, length = 4 ).list() )
+    c_len = len( sage_Compositions( deg + 4, length = 4 ).list() )
     c_str_lst = [ 'c' + str( i ) for i in range( c_len )]
 
-    R = PolynomialRing( PolyRing.num_field, ['x0', 'x1', 'x2', 'x3'] + c_str_lst + ['x', 'y', 'z'], order = 'lex' )
+    R = sage_PolynomialRing( PolyRing.num_field, ['x0', 'x1', 'x2', 'x3'] + c_str_lst + ['x', 'y', 'z'], order = 'lex' )
     x0, x1, x2, x3 = R.gens()[0:4]
     c_lst = R.gens()[4:4 + c_len]
     x, y, z = R.gens()[4 + c_len:]
@@ -87,7 +101,7 @@ def get_implicit_projection( ls, deg ):
     R_dict = R.gens_dict()
     R_dict.update( PolyRing.num_field.gens_dict() )
 
-    p0, p1, p2, p3 = sage_eval( str( [p0, p1, p2, p3] ), R_dict )
+    p0, p1, p2, p3 = sage__eval( str( [p0, p1, p2, p3] ), R_dict )
 
     LSTools.p( R )
     LSTools.p( 'm_lst =', m_lst )
@@ -100,13 +114,13 @@ def get_implicit_projection( ls, deg ):
     LSTools.p( 'F =', F )
 
     # compute F( p0(x,y,z):...: p3(x,y,z) )
-    FP = expand( F.subs( {x0:p0, x1:p1, x2:p2, x3:p3} ) )  # expand to prevent a bug in sage.
+    FP = sage_expand( F.subs( {x0:p0, x1:p1, x2:p2, x3:p3} ) )  # expand to prevent a bug in sage.
     LSTools.p( 'FP =', FP )
 
     # obtain coefficients w.r.t. x, y and z
     coef_lst = []
     pmzdeg = p0.total_degree()
-    comp_lst = Compositions( deg * pmzdeg + 3 , length = 3 ).list()  # e.g. [1,1,2]=[0,0,1]
+    comp_lst = sage_Compositions( deg * pmzdeg + 3 , length = 3 ).list()  # e.g. [1,1,2]=[0,0,1]
     LSTools.p( 'comp_lst =', comp_lst )
     for comp in comp_lst:
         coef = FP.coefficient( {x: comp[0] - 1, y: comp[1] - 1, z:comp[2] - 1} )
@@ -117,27 +131,27 @@ def get_implicit_projection( ls, deg ):
     #
     # alternative code
     # ----------------
-    # GB = list( ideal( coef_lst ).groebner_basis() )
+    # GB = list( R.ideal( coef_lst ).groebner_basis() )
     # LSTools.p( 'GB =', GB )
-    # red_F = F.reduce( ideal( GB ) )
+    # red_F = F.reduce( R.ideal( GB ) )
     # for g in GB:
     #    red_F = red_F.quo_rem( g )[1]
     # LSTools.p( 'red_F =', red_F )
     # ----------------
     #
-    scoef_lst = [ SR( coef ) for coef in coef_lst]
-    sc_lst = [ SR( c ) for c in c_lst]
-    sol_lst = solve( scoef_lst, sc_lst, solution_dict = True )
+    scoef_lst = [ sage_SR( coef ) for coef in coef_lst]
+    sc_lst = [ sage_SR( c ) for c in c_lst]
+    sol_lst = sage_solve( scoef_lst, sc_lst, solution_dict = True )
     LSTools.p( sol_lst )
-    red_F = expand( SR( F ).subs( sol_lst[0] ) )
+    red_F = sage_expand( sage_SR( F ).subs( sol_lst[0] ) )
     LSTools.p( 'red_F =', red_F )
 
     # check the solutions
-    sp0, sp1, sp2, sp3 = SR( p0 ), SR( p1 ), SR( p2 ), SR( p3 )
-    sx0, sx1, sx2, sx3 = SR( x0 ), SR( x1 ), SR( x2 ), SR( x3 )
-    chk_F = expand( red_F.subs( {sx0:sp0, sx1:sp1, sx2:sp2, sx3:sp3} ) )
+    sp0, sp1, sp2, sp3 = sage_SR( p0 ), sage_SR( p1 ), sage_SR( p2 ), sage_SR( p3 )
+    sx0, sx1, sx2, sx3 = sage_SR( x0 ), sage_SR( x1 ), sage_SR( x2 ), sage_SR( x3 )
+    chk_F = sage_expand( red_F.subs( {sx0:sp0, sx1:sp1, sx2:sp2, sx3:sp3} ) )
     LSTools.p( 'chk_F =', chk_F )
     if chk_F != 0:
-        raise Exception( 'The polynomial red_F(p0:p1:p2:p3) does not vanish:', red_F, ( p0, p1, p2, p3 ), chk_F )
+        warnings.warn( 'The polynomial red_F(p0:p1:p2:p3) does not vanish.' )
 
     return red_F

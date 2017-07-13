@@ -2,11 +2,14 @@
 Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 Created on Aug 6, 2016
 @author: Niels Lubbes
+
+The method "get_solution_set()" should be called 
+from "LinearSeries.get_solution_set()".
 '''
-from sage.all import *
 
 from class_ls_tools import LSTools
-from class_linear_series import *
+
+from sage_interface import sage_Combinations
 
 
 def get_solution_set( ls ):
@@ -31,7 +34,7 @@ def get_solution_set( ls ):
     xres = 0
     x, y = ls.gens()
     interval = range( len( ls.pol_lst ) )
-    for i, j in Combinations( interval, 2 ):
+    for i, j in sage_Combinations( interval, 2 ):
         xres = ls.ring.resultant( ls.pol_lst[i], ls.pol_lst[j], y )
         if xres != 0:
             break

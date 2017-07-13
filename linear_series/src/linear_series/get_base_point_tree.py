@@ -2,14 +2,14 @@
 Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 Created on Aug 4, 2016
 @author: Niels Lubbes
+
+The method "get_bp_tree()" should be called from "LinearSeries.get_bp_tree()"
 '''
 
-from sage.all import *
-
 from class_ls_tools import LSTools
-from class_poly_ring import *
-from class_linear_series import *
-from class_base_points import *
+from class_poly_ring import PolyRing
+from class_base_points import BasePointTree
+from class_base_points import BasePoint
 
 
 def in_previous_chart( sol, chart ):

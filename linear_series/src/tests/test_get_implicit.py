@@ -3,12 +3,9 @@ Use of this source code is governed by a MIT-style license that can be found in 
 Created on Jul 6, 2017
 @author: Niels Lubbes
 '''
-from sage.all import *
 
-from linear_series.class_poly_ring import *
-from linear_series.class_linear_series import *
-from linear_series.get_implicit import *
-
+from linear_series.class_poly_ring import PolyRing
+from linear_series.class_linear_series import LinearSeries
 
 
 class TestGetImplicit:
@@ -25,7 +22,7 @@ class TestGetImplicit:
          'y^2*v^2 + y^2*w^2'
          ]
         ls = LinearSeries( pmz_lst, PolyRing( 'x,y,v,w', True ) )
-        imp_lst = get_implicit_image( ls )
+        imp_lst = ls.get_implicit_image()
 
         # test whether "pmz_lst" substituted in "imp_lst" vanishes
         #
@@ -40,9 +37,19 @@ class TestGetImplicit:
         assert set( r_lst ) == {0}
 
 
+    def test__get_implicit_projection__3( self ):
+
+        pmz_lst = [ 'x^2*z+y^2*z+z^2*z', 'x^2*y', 'x*y^2', 'x*y*z' ]
+        ls = LinearSeries( pmz_lst, PolyRing( 'x,y,z', True ) )
+
+        # this method does not work properly yet
+        imp_lst = ls.get_implicit_projection( 3 )
+
+
 if __name__ == '__main__':
 
     # TestGetImplicit().test__get_implicit_image()
+    TestGetImplicit().test__get_implicit_projection__3()
 
     pass
 

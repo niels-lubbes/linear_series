@@ -3,11 +3,13 @@ Use of this source code is governed by a MIT-style license that can be found in 
 Created on Jul 06, 2017
 @author: Niels Lubbes
 '''
-from sage.all import *
-
 import inspect
 import time
 import sys
+import os
+
+from sage_interface import sage_save
+from sage_interface import sage_load
 
 
 class LSTools():
@@ -144,7 +146,7 @@ class LSTools():
             try:
 
                 LSTools.p( 'Loading from:', file_name )
-                LSTools.__tool_dct = load( file_name )
+                LSTools.__tool_dct = sage_load( file_name )
 
             except Exception as e:
 
@@ -178,7 +180,7 @@ class LSTools():
         LSTools.p( 'Saving to:', file_name )
         LSTools.filter_reset()
 
-        save( LSTools.__tool_dct, file_name )
+        sage_save( LSTools.__tool_dct, file_name )
 
 
     @staticmethod
