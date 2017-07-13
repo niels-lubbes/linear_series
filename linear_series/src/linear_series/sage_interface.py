@@ -1,6 +1,9 @@
 '''
-Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
+Use of this source code is governed by a 
+MIT-style license that can be found in the 
+LICENSE file.
 Created on Jul 12, 2017
+@author: Niels Lubbes
 
 Sage has a complicated import structure and it 
 is not possible to simply import each need 
@@ -18,8 +21,6 @@ two examples. The interface method for
 method for "sage_eval()" is not called 
 "sage_sage_eval()" but instead "sage__eval()". 
 The variable "ZZ" is called "sage_ZZ".
-
-@author: Niels Lubbes
 '''
 
 from sage.all import *
