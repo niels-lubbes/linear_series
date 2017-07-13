@@ -251,24 +251,22 @@ class LinearSeries:
     def __str__( self ):
         '''                
         OUTPUT:
-            - Human readable string representation of object. The String
-              has the following format:
-                  { N, <<F0,...,FN>>, R }
-              where
+          - Human readable string representation of object. The String
+            has the following format:
+                { N, <<F0,...,FN>>, R }
+            where
                 * N         = Number of polynomials defining the linear series.
                 * F0,...,FN = The N polynomials that define the linear series.
                 * R         = The PolyRing over which the linear series is defined 
                 
         EXAMPLES:
-            - print( LinearSeries( ['x^2', 'x*z + y^2'], PolyRing( 'x,y,z', True ) ) )                          
-              * output: * 
-              '{ 2, <<x^2, y^2 + x*z>>, QQ[x, y, z] }'
+          - sage: print( LinearSeries( ['x^2', 'x*z + y^2'], PolyRing( 'x,y,z', True ) ) )                          
+            out : { 2, <<x^2, y^2 + x*z>>, QQ[x, y, z] }
               
-            - ring = PolyRing( 'x,y,z', True )
-              ring.ext_num_field( 't^2 + 1' )              
-              print( LinearSeries( ['x^2+a0*y*z','y^2+x*z'], ring ) )
-              * output: * 
-              '{ 2, <<x^2 + (a0)*y*z, y^2 + x*z>>, QQ( <a0|t^2 + 1> )[x, y, z] }'                   
+          - sage: ring = PolyRing( 'x,y,z', True )
+            sage: ring.ext_num_field( 't^2 + 1' )              
+            sage: print( LinearSeries( ['x^2+a0*y*z','y^2+x*z'], ring ) )
+            out : { 2, <<x^2 + (a0)*y*z, y^2 + x*z>>, QQ( <a0|t^2 + 1> )[x, y, z] }                   
         '''
 
         s = '{ '

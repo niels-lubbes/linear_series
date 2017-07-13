@@ -103,16 +103,16 @@ class BasePointTree():
             Below we see an example.
                 
         EXAMPLE:
-          - ls = LinearSeries( ['x^2+y^2', 'x*z+y^2'], PolyRing( 'x,y,z', True ) )
-            print( ls.get_bp_tree() )  
-            
-            * output: *
-            { 2, <<x^2 + y^2, y^2 + x*z>>, QQ( <a0|t^2 + 1> )[x, y, z] }
-            chart=z, depth=0, mult=1, sol=(0, 0), { 2, <<x^2 + y^2, y^2 + x>>, QQ( <a0|t^2 + 1> )[x, y] }
-                chart=t, depth=1, mult=1, sol=(0, 0), { 2, <<x^2*y + y, x + y>>, QQ( <a0|t^2 + 1> )[x, y] }
-            chart=z, depth=0, mult=1, sol=(1, (-a0)), { 2, <<x^2 + y^2, y^2 + x>>, QQ( <a0|t^2 + 1> )[x, y] }
-            chart=z, depth=0, mult=1, sol=(1, (a0)), { 2, <<x^2 + y^2, y^2 + x>>, QQ( <a0|t^2 + 1> )[x, y] }                                                      
+          - sage: ls = LinearSeries( ['x^2+y^2', 'x*z+y^2'], PolyRing( 'x,y,z', True ) )
+            sage: print( ls.get_bp_tree() )  
+            out :            
+                { 2, <<x^2 + y^2, y^2 + x*z>>, QQ( <a0|t^2 + 1> )[x, y, z] }
+                chart=z, depth=0, mult=1, sol=(0, 0), { 2, <<x^2 + y^2, y^2 + x>>, QQ( <a0|t^2 + 1> )[x, y] }
+                    chart=t, depth=1, mult=1, sol=(0, 0), { 2, <<x^2*y + y, x + y>>, QQ( <a0|t^2 + 1> )[x, y] }
+                chart=z, depth=0, mult=1, sol=(1, (-a0)), { 2, <<x^2 + y^2, y^2 + x>>, QQ( <a0|t^2 + 1> )[x, y] }
+                chart=z, depth=0, mult=1, sol=(1, (a0)), { 2, <<x^2 + y^2, y^2 + x>>, QQ( <a0|t^2 + 1> )[x, y] }                                                      
         '''
+
         tree_str = ''
         if self.ls != None:
             tree_str += '\n' + str( self.ls )
@@ -189,8 +189,13 @@ class BasePoint():
 
         return bp
 
-    # human readable string representation of object
+    #
     def __str__( self ):
+        '''
+        OUTPUT:
+          - Human readable string representation of object.
+            See "BasePointTree.__str__()".
+        '''
 
         if BasePointTree.short == True and self.mult in [0, -1]:
             return ''

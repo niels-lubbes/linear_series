@@ -10,7 +10,6 @@ from class_ls_tools import LSTools
 from sage_interface import sage_QQ
 from sage_interface import sage__eval
 from sage_interface import sage_PolynomialRing
-
 from sage_interface import sage_factor
 from sage_interface import sage_gcd
 from sage_interface import sage_expand
@@ -355,8 +354,21 @@ class PolyRing:
             self.ext_num_field( fct[0] )
 
 
-    # human readable string representation of object
     def __str__( self ):
+        '''
+        OUTPUT:
+          - A human readable string representation of object.
+            The roots of the number field, that are adjoined 
+            to the rational numbers QQ are depicted with their
+            minimal polynomial.
+            
+        EXAMPLES:
+          - sage: ring = PolyRing( 'x,y,z', True )
+            sage: ring.ext_num_field( 't^2 + 1' )
+            sage: ring.ext_num_field( 't^3 + a0' )
+            sage: print( ring )
+            out : QQ( <a0|t^2 + 1>, <a1|t^2 + a0*t - 1> )[x, y, z]
+        '''
         s = 'QQ'
         if len( PolyRing.root_lst ) > 0:
             rs = ''
