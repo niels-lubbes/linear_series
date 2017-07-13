@@ -3,8 +3,9 @@ Use of this source code is governed by a MIT-style license that can be found in 
 Created on Feb 17, 2017
 @author: Niels Lubbes
 '''
-from sage.all import *
+
 from linear_series.class_ls_tools import LSTools
+
 
 class TestClassLSTools:
 

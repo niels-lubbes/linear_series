@@ -78,6 +78,7 @@ def sage_FractionField( *args, **kwargs ):
     return FractionField( *args, **kwargs )
 
 # from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
+# http://doc.sagemath.org/html/en/reference/polynomial_rings/sage/rings/polynomial/polynomial_ring_constructor.html
 def sage_PolynomialRing( *args, **kwargs ):
     return PolynomialRing( *args, **kwargs )
 

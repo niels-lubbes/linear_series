@@ -4,9 +4,7 @@ Created on Jul 10, 2017
 @author: Niels Lubbes
 '''
 
-from sage.all import *
-
-from linear_series.class_base_points import *
+from linear_series.class_base_points import BasePointTree
 from class_test_tools import TestTools
 
 

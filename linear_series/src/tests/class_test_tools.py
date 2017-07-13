@@ -1,16 +1,11 @@
 '''
 Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
-
-
 Created on Jul 12, 2017
 @author: Niels Lubbes
 '''
 
 
 class TestTools( object ):
-
-    # def __init__( self ):
-    #    super()
 
     def __clean__( self, str0, s_lst ):
         for s in s_lst:
@@ -43,6 +38,6 @@ class TestTools( object ):
 
 if __name__ == '__main__':
 
-    print( TestTools().equal_output_strings( 'a', 'b' ) )
+    # print( TestTools().equal_output_strings( 'a', 'b' ) )
     pass
 

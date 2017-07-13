@@ -3,11 +3,10 @@ Use of this source code is governed by a MIT-style license that can be found in 
 Created on Jul 6, 2017
 @author: Niels Lubbes
 '''
-from sage.all import *
-
 from linear_series.class_ls_tools import LSTools
-from linear_series.class_poly_ring import *
-from linear_series.class_linear_series import *
+from linear_series.class_poly_ring import PolyRing
+from linear_series.class_linear_series import LinearSeries
+
 from class_test_tools import TestTools
 
 class TestGetBasePointTree( TestTools ):

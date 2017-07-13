@@ -3,11 +3,8 @@ Use of this source code is governed by a MIT-style license that can be found in 
 Created on Jul 6, 2017
 @author: Niels Lubbes
 '''
-
-from sage.all import *
-
-from linear_series.class_poly_ring import *
-from linear_series.class_linear_series import *
+from linear_series.class_poly_ring import PolyRing
+from linear_series.class_linear_series import LinearSeries
 
 
 class TestGetSolutionSet:
@@ -23,13 +20,14 @@ class TestGetSolutionSet:
 
         assert str( sol_lst ) == '[(-a0, a0), (a0, -a1), (0, 0), (a0, -a0), (a0, a1 + a0), (-a0, a1), (-a0, -a1 - a0)]'
 
+        #
+        # ------------------------------
         # Output with Sage solve method:
+        # ------------------------------
         #
-        # y,z=var('y,z')
-        # solve( [y^2*z + z, y^3 + z^3] )
-        #
-        # -----------------------------------------------
-        #
+        # sage: y,z=var('y,z')
+        # sage: solve( [y^2*z + z, y^3 + z^3] )
+        # out :
         # [
         #  [y == 0,
         #   z == 0],
@@ -50,7 +48,6 @@ class TestGetSolutionSet:
         #
         #  [y == I, z == -I]]
         #
-        # -----------------------------------------------
 
 if __name__ == '__main__':
     # TestGetSolutionSet().test__get_solution_set()

@@ -5,9 +5,14 @@ Created on Jul 6, 2017
 @author: Niels Lubbes
 '''
 
-from sage.all import *
+from linear_series.class_poly_ring import PolyRing
 
-from linear_series.class_poly_ring import *
+from linear_series.sage_interface import sage_QQ
+from linear_series.sage_interface import sage__eval
+from linear_series.sage_interface import sage_PolynomialRing
+from linear_series.sage_interface import sage_factor
+from linear_series.sage_interface import sage_NumberField
+from linear_series.sage_interface import sage_FractionField
 
 
 class TestClassPolyRing:
@@ -59,10 +64,10 @@ class TestClassPolyRing:
 
         pol = ring.coerce( '(x+1)*(x^2+a0+1)' )
         assert str( pol ) == 'x^3 + x^2 + (a0 + 1)*x + a0 + 1'
-        assert str( factor( pol ) ) == '(x + 1) * (x + a0) * (x - a0)'
+        assert str( sage_factor( pol ) ) == '(x + 1) * (x + a0) * (x - a0)'
 
         con = ring.coerce( 'a0' )
-        assert str( factor( con ) ) == 'a0'
+        assert str( sage_factor( con ) ) == 'a0'
 
 
 
@@ -81,7 +86,7 @@ class TestClassPolyRing:
         x, y, z = ring.gens()
 
         pol = x ** 3 + x + a[0] + 3
-        assert str( factor( pol ) ) == '(x - a2) * (x - a1) * (x + a2 + a1)'
+        assert str( sage_factor( pol ) ) == '(x - a2) * (x - a1) * (x + a2 + a1)'
 
         mat = list( pol.sylvester_matrix( y ** 2 + x ** 2, x ) )
         assert str( mat ) == '[(1, 0, 1, a0 + 3, 0), (0, 1, 0, 1, a0 + 3), (1, 0, y^2, 0, 0), (0, 1, 0, y^2, 0), (0, 0, 1, 0, y^2)]'
@@ -96,18 +101,18 @@ class TestClassPolyRing:
         '''
 
         # construct a ring Rxyz over a number field
-        R = PolynomialRing( QQ, 'a' )
+        R = sage_PolynomialRing( sage_QQ, 'a' )
         a = R.gens()[0]
-        F0 = NumberField( [a ** 2 + a + 1], 'a0' )
+        F0 = sage_NumberField( [a ** 2 + a + 1], 'a0' )
         a0 = F0.gens()[0]
         R.change_ring( F0 )
-        F1 = NumberField( [a ** 5 + a0 + a + 3], 'a1' )
+        F1 = sage_NumberField( [a ** 5 + a0 + a + 3], 'a1' )
         a1 = F1.gens()[0]
         R.change_ring( F1 )
-        F2 = NumberField( [a ** 2 + a + a0 ** 5 + a1 + 3], 'a2' )
+        F2 = sage_NumberField( [a ** 2 + a + a0 ** 5 + a1 + 3], 'a2' )
         a2 = F2.gens()[0]
         R.change_ring( F2 )
-        Rxyz = PolynomialRing( F2, var( 'x,y,z' ), order = 'lex' )
+        Rxyz = sage_PolynomialRing( F2, 'x,y,z', order = 'lex' )
         x, y, z = Rxyz.gens()
 
         # we consider some elements in Rxyz
@@ -117,18 +122,18 @@ class TestClassPolyRing:
 
         # construct a ring PR over a fraction field
         ngens = F2.gens_dict().keys()  # a0, a1,...
-        FF = FractionField( PolynomialRing( QQ, ngens ) )
+        FF = sage_FractionField( sage_PolynomialRing( sage_QQ, ngens ) )
         pgens = Rxyz.gens_dict().keys()  # x, y, z
-        PR = PolynomialRing( FF, pgens )
+        PR = sage_PolynomialRing( FF, pgens )
         eval_dct = PR.gens_dict()
         eval_dct.update( FF.gens_dict() )
 
         # coerce elements to fraction field
-        spol1 = sage_eval( str( pol1 ), eval_dct )
-        spol2 = sage_eval( str( pol2 ), eval_dct )
-        sx = sage_eval( str( x ), eval_dct )
-        sy = sage_eval( str( y ), eval_dct )
-        sz = sage_eval( str( z ), eval_dct )
+        spol1 = sage__eval( str( pol1 ), eval_dct )
+        spol2 = sage__eval( str( pol2 ), eval_dct )
+        sx = sage__eval( str( x ), eval_dct )
+        sy = sage__eval( str( y ), eval_dct )
+        sz = sage__eval( str( z ), eval_dct )
 
         # in PR we can compute quo_rem, resultant and gcd
         squo = spol1.quo_rem( spol2 )[0]
@@ -137,8 +142,8 @@ class TestClassPolyRing:
         # coerce back to Rxyz
         eval_dct2 = Rxyz.gens_dict()
         eval_dct2.update( F2.gens_dict() )
-        quo = sage_eval( str( squo ), eval_dct2 )
-        res = sage_eval( str( sres ), eval_dct2 )
+        quo = sage__eval( str( squo ), eval_dct2 )
+        res = sage__eval( str( sres ), eval_dct2 )
 
         # Values of variables:
         #
@@ -150,9 +155,9 @@ class TestClassPolyRing:
         # res  = 0
         #
         if True:
-            print( 'pol  =', factor( pol ) )
-            print( 'pol1 =', factor( pol1 ) )
-            print( 'pol2 =', factor( pol2 ) )
+            print( 'pol  =', sage_factor( pol ) )
+            print( 'pol1 =', sage_factor( pol1 ) )
+            print( 'pol2 =', sage_factor( pol2 ) )
             print( 'squo =', squo )
             print( 'sres =', sres )
             print( 'res =', res )
@@ -162,7 +167,7 @@ class TestClassPolyRing:
         # pol1 and pol2 have a common factor
         # over the number field F2 so res=0 although sres!=0.
         #
-        assert str( factor( pol1 ) ) == '(x - a1) * (x^4 + a1*x^3 + a1^2*x^2 + a1^3*x + a1^4 + 1)'
+        assert str( sage_factor( pol1 ) ) == '(x - a1) * (x^4 + a1*x^3 + a1^2*x^2 + a1^3*x + a1^4 + 1)'
         assert res == 0
         assert sres != 0
 
