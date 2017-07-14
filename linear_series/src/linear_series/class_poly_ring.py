@@ -2,10 +2,13 @@
 Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 Created on Aug 4, 2016
 @author: Niels Lubbes
+
+The polynomial ring is a object that extends PolynomialRing of Sage
+in the sense that the base field can be extended by roots, by passing
+the minimal polynomial of the root as argument.
 '''
 
 from class_ls_tools import LSTools
-
 
 from sage_interface import sage_QQ
 from sage_interface import sage__eval
