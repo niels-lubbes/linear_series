@@ -17,7 +17,7 @@ class TestClassLSTools:
         lst.filter( None )
         assert lst.p( 'Hello world!' ) != None
 
-        lst.filter( 'another_class.py' )
+        lst.filter( ['another_class.py'] )
         assert lst.p( 'No output since called from another class.' ) == None
 
         lst.filter_unset()
@@ -26,7 +26,7 @@ class TestClassLSTools:
         lst.filter_reset()
         assert lst.p( 'Filter is enabled again so do not output.' ) == None
 
-        lst.filter( 'test_class_ls_tools.py' )
+        lst.filter( ['test_class_ls_tools.py'] )
         assert lst.p( 'Only output if called from this class' ) != None
 
 
