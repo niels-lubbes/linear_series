@@ -16,6 +16,7 @@ from sage_interface import sage_expand
 from sage_interface import sage_SR
 from sage_interface import sage_NumberField
 from sage_interface import sage_FractionField
+from sage_interface import sage_proof
 
 
 class PolyRing:
@@ -25,11 +26,16 @@ class PolyRing:
     Unless explicitly specified in the constructor, the number field
     will contain roots, that were previously added.     
     '''
+
     # Initially the number field is the rational numbers (static).
+    #
     num_field = sage_QQ
 
     # List of roots in number field that are adjoined to QQ (static).
-    # This list is used in "PolyRing.__str__()" for the human readable output format.
+    # This list is used in "PolyRing.__str__()" for the human readable
+    # output format. Its elements consist of 2-tuples:
+    #     ( [name of root], [minimal polynomial for root] ).
+    #
     root_lst = []
 
     def __init__( self, var_lst = 'x,y,z', reset_num_field = False ):
@@ -46,18 +52,29 @@ class PolyRing:
         '''
 
         # reset static num_field variable
+        #
         if reset_num_field:
             PolyRing.reset_base_field()
 
         # Polynomial ring over an algebraic number field.
+        #
         self.pol_ring = sage_PolynomialRing( PolyRing.num_field, var_lst )
 
         # Usage: sage__eval('<element in pol_ring>', ring_dct)
+        #
         self.ring_dct = {}
 
         # update dictionary
+        #
         self.ring_dct['t'] = sage_PolynomialRing( PolyRing.num_field, 't' ).gens()[0]
         self.__update_ring_dct()
+
+        # Unlike in PARI/GP, class group computations in Sage do not by default
+        # assume the Generalized Riemann Hypothesis. To do class groups computations
+        # not provably correctly we set proof.number_field(False). It can easily take
+        # 1000 times longer to do computations with proof (the default).
+        #
+        sage_proof.number_field( False )
 
 
     @staticmethod
@@ -83,30 +100,32 @@ class PolyRing:
         self.ring_dct['t'] = self.ring_dct['t'].parent().change_ring( self.get_num_field() ).gens()[0]
 
 
-    def get_num_field( self ):
-        return self.pol_ring.base_ring()
-
-
-    def set_num_field( self, field ):
+    def set_num_field( self, field, root, min_pol ):
         '''
         INPUT:
-            - A Sage field object. For example QQ.
+            - field   -- A Sage field object. For example QQ.
+            - root    -- An element in field that has been adjoined to it 
+                         most recently.
+            - min_pol -- The minimal polynomial of root.
+            
         OUTPUT:
             - Modifies "self.pol_ring" to be a PolynomialRing over the new
-              base field. Note that PolyRing.root_lst is not updated by this
-              method! In particular, if not used with care, the output of
-              "PolyRing.__str__()" might be inconsistent with the current
-              base field.  
+              base field.
         '''
         self.pol_ring = self.pol_ring.change_ring( field )
         PolyRing.num_field = self.get_num_field()
+        PolyRing.root_lst += [ ( root, min_pol ) ]
         self.__update_ring_dct()
+
+
+    def get_num_field( self ):
+        return self.pol_ring.base_ring()
 
 
     def set_gens( self, new_gens ):
         '''
         INPUT:
-            - "new_gens" set of generators of PolynomialRing.
+            - "new_gens" -- set of generators of PolynomialRing.
         OUTPUT:
             - Modifies "self.pol_ring" to be a PolynomialRing with 
               generators "new_gens" over the same number field as before.
@@ -215,7 +234,7 @@ class PolyRing:
         spol1, spol2 = self.coerce_ff( [pol1, pol2] )
         squo = spol1.quo_rem( spol2 )[0]
         quo = self.coerce( squo )
-        LSTools.p( ( pol1, pol2, squo, quo ) )
+        # LSTools.p( ( pol1, pol2, squo, quo ) )
         return quo
 
 
@@ -228,8 +247,12 @@ class PolyRing:
         OUTPUT:
             - Resultant of "pol1" and "pol2" w.r.t. "var" in "self.pol_ring". 
         '''
-        # currently there is a bug in Sage for
-        # computing the resultant over a number field.
+        # currently there is a bug in Sage for computing
+        # the resultant over a number field. So we coerce
+        # the arguments first to a fraction field, then
+        # we compute the resultant, after which we coerce
+        # the resultant to be an element in PolyRing.
+
         spol1, spol2, svar = self.coerce_ff( [pol1, pol2, var] )
 
         if spol1 in sage_QQ or spol2 in sage_QQ:
@@ -238,7 +261,6 @@ class PolyRing:
             sres = spol1.resultant( spol2, svar )
 
         res = self.coerce( sres )
-        LSTools.p( ( pol1, pol2, var, sres, res ) )
 
         return res
 
@@ -256,19 +278,16 @@ class PolyRing:
                 * A list of polynomials in "self.pol_ring" such 
                   that the gcd is factored out.
         '''
-        LSTools.p( pol_lst )
 
         # In Sage it is currently not possible to compute gcd and to
         # factor a multivariate polynomial over a number field.
 
         # convert to symbolic ring
         spol_lst = self.coerce_sr( pol_lst )
-        LSTools.p( spol_lst )
 
         # compute gcd and factor in symbolic ring
         sgcd = sage_gcd( spol_lst )
         sfct_lst = sgcd.factor_list()
-        LSTools.p( sgcd, sfct_lst )
 
         # factor out gcd in polynomials
         spol_lst = [ sage_expand( spol / sgcd ) for spol in spol_lst]
@@ -282,7 +301,6 @@ class PolyRing:
             if fct[0] not in PolyRing.num_field:
                 nfct_lst += [ fct ]
 
-        LSTools.p( nfct_lst, npol_lst )
         return nfct_lst, npol_lst
 
 
@@ -297,21 +315,23 @@ class PolyRing:
               
               If "pol" is a constant then the empty list is returned.
         '''
-
+        LSTools.p( 'factoring ', pol, ' in ', self )
         if pol in self.get_num_field():
             return []
         else:
-            return sage_factor( pol )
+            fct_lst = sage_factor( pol )
+            LSTools.p( '\t', fct_lst )
+            return fct_lst
 
         #
-        # The call "factor(pol)" sometimes raises the following warning:
+        # The call "sage_factor(pol)" sometimes raises the following warning:
         # "
         # local/lib/python2.7/site-packages/sage/rings/number_field/number_field.py:1526:
         # UserWarning: interpreting PARI polynomial 1 relative to the
         # defining polynomial x^2 + 1 of the PARI number field % (x, self.pari_polynomial()))
         # "
         #
-        # If "pol" in "self.ring.get_num_field()" then "factor( ypol )" raises
+        # If "pol" in "self.ring.get_num_field()" then "sage_factor( ypol )" raises
         # "
         # ArithmeticError: non-principal ideal in factorization
         # "
@@ -331,23 +351,21 @@ class PolyRing:
         pol = self.coerce( pol )
         if pol in self.get_num_field():
             return  # nothing to do here
-
         fct_lst = self.factor( pol )
         first_pol = fct_lst[0][0]
 
-        # LSTools.p( [fct_lst, self ] )
 
         if first_pol.degree() == 1:
             fct_lst = fct_lst[1:]
         else:
+
             # obtain extended number field with first factor
             gen_str = 'a' + str( len( self.root_lst ) )
             NF = sage_NumberField( [first_pol], gen_str )
 
-            # update self
-            self.set_num_field( NF )
-            PolyRing.root_lst += [( NF.gens()[0], first_pol )]
-            self.__update_ring_dct()
+            # set the new number field
+            self.set_num_field( NF, NF.gens()[0], first_pol )
+
 
         # continue recursively with remaining factors until all factors are linear
         for fct in fct_lst:
