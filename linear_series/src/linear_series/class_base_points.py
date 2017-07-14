@@ -122,6 +122,20 @@ class BasePointTree():
         return tree_str.replace( '\n', '\n\t' )
 
 
+    def alt_str( self ):
+        ''' 
+        This method can be useful for testing.
+        
+        OUTPUT:
+          - A string representation without the linear series. 
+        '''
+        tree_str = ''
+        for chart in self.chart_lst:
+            for bp in self[chart]:
+                tree_str += bp.alt_str()
+        return tree_str.replace( '\n', '\n\t' )
+
+
 class BasePoint():
     '''
     This class represents a binary tree of base points.
@@ -189,7 +203,6 @@ class BasePoint():
 
         return bp
 
-    #
     def __str__( self ):
         '''
         OUTPUT:
@@ -220,4 +233,29 @@ class BasePoint():
         return bp_str
 
 
+    def alt_str( self ):
+        ''' 
+        This method can be useful for testing.
+        
+        OUTPUT:
+          - A string representation without the linear series. 
+        '''
+
+        if self.mult in [0, -1]:
+            return ''
+
+        bp_str = ''
+        bp_str += '\n' + 4 * self.depth * ' '
+        bp_str += 'chart=' + self.chart + ', '
+        bp_str += 'depth=' + str( self.depth ) + ', '
+        bp_str += 'mult=' + str( self.mult ) + ', '
+        bp_str += 'sol=' + str( self.sol ) + ', '
+
+        for bp in self.bp_lst_t:
+            bp_str += bp.alt_str()
+
+        for bp in self.bp_lst_s:
+            bp_str += bp.alt_str()
+
+        return bp_str
 

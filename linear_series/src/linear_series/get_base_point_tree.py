@@ -77,8 +77,7 @@ def get_bp_lst_chart( ls, chart, depth = 0 ):
           of linear series "ls".
     '''
 
-    LSTools.p( 5 * '=' )
-    LSTools.p( ( depth, chart, ls ) )
+    LSTools.p( 'input =', ( depth, chart, str( ls ) ) )
 
     nls = ls.copy()
     if chart == 's':
