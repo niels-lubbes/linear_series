@@ -20,21 +20,25 @@ def get_ls_lst( ls, bp_lst ):
     '''
     Helper for "get_linear_series" method. 
     '''
-    LSTools.p( 'input =', ' len( bp_lst ) =', len( bp_lst ), ls )
+    ind_str = None
 
     ls_lst = []
     for bp in bp_lst:
+
+        if ind_str == None:
+            ind_str = bp.depth * '\t'
+            LSTools.p( ind_str + 'input  = len( bp_lst ):' + str( len( bp_lst ) ) + ',' + str( ls ) )
 
         # base points which do not have multiplicity at least
         # can be ignored
         #
         if bp.mult <= 0: continue
-        LSTools.p( bp )
+        LSTools.p( 'basepoint  = ' + str( bp )[1:].replace( '\n', '\n' + ind_str ) )
 
         # translate the base point to the origin
         #
         nls = ls.copy().translate_to_origin( bp.sol )
-        LSTools.p( 'translated: ', nls )
+        LSTools.p( ind_str + 'translated =', nls )
 
         #
         # Loop through (a,b) s.t.
@@ -43,7 +47,7 @@ def get_ls_lst( ls, bp_lst ):
         for m in range( 1, bp.mult + 1 ):
             for a, b in sage_Compositions( m - 1 + 2, length = 2 ):
                 ls_lst += [ nls.copy().diff( a - 1, b - 1 ) ]
-                LSTools.p( '\t\t', a - 1, b - 1, ls_lst[-1] )
+                LSTools.p( ind_str + str( a - 1 ) + ',' + str( b - 1 ) + ',' + str( ls_lst[-1] ) )
 
         #
         # Continue recursively.
@@ -52,7 +56,8 @@ def get_ls_lst( ls, bp_lst ):
         ls_lst += get_ls_lst( nls.copy().subs( {u:u * v} ).quo( v ** bp.mult ), bp.bp_lst_t )
         ls_lst += get_ls_lst( nls.copy().subs( {v:v * u} ).quo( u ** bp.mult ), bp.bp_lst_s )
 
-    LSTools.p( 'output =', [str( ls ) for ls in ls_lst] )
+    if ind_str != None:
+        LSTools.p( ind_str + 'output =', [str( ls ) for ls in ls_lst] )
 
     return ls_lst
 

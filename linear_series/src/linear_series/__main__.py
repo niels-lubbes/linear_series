@@ -362,7 +362,6 @@ if __name__ == '__main__':
 
     LSTools.start_timer()
     LSTools.filter( ['__main__.py', 'get_linear_series.py'] )  # output only from specified modules
-    LSTools.filter( ['__main__.py'] )
 
     ################################################
     #                                              #
