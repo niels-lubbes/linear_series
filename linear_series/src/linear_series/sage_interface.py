@@ -30,6 +30,9 @@ from sage.all import *
 # sage.structure                                #
 #################################################
 
+# from sage.structure.proof.proof import proof
+sage_proof = proof
+
 # from sage.structure.sage_object import save
 def sage_save( *args, **kwargs ):
     return save( *args, **kwargs )
@@ -141,4 +144,5 @@ def sage_Compositions( *args, **kwargs ):
 # from sage.combinat.combination import Combinations
 def sage_Combinations( *args, **kwargs ):
     return Combinations( *args, **kwargs )
+
 

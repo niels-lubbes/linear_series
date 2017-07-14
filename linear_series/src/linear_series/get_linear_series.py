@@ -20,6 +20,8 @@ def get_ls_lst( ls, bp_lst ):
     '''
     Helper for "get_linear_series" method. 
     '''
+    LSTools.p( 'input =', ' len( bp_lst ) =', len( bp_lst ), ls )
+
     ls_lst = []
     for bp in bp_lst:
 
@@ -27,17 +29,21 @@ def get_ls_lst( ls, bp_lst ):
         # can be ignored
         #
         if bp.mult <= 0: continue
+        LSTools.p( bp )
 
         # translate the base point to the origin
         #
         nls = ls.copy().translate_to_origin( bp.sol )
+        LSTools.p( 'translated: ', nls )
 
         #
         # Loop through (a,b) s.t.
         # (a-1)+(b-1)=bp.mult-1 and (a-1)>=(b-1)>=0
         #
-        for a, b in sage_Compositions( bp.mult - 1 + 2, length = 2 ):
-            ls_lst += [ nls.copy().diff( a - 1, b - 1 ) ]
+        for m in range( 1, bp.mult + 1 ):
+            for a, b in sage_Compositions( m - 1 + 2, length = 2 ):
+                ls_lst += [ nls.copy().diff( a - 1, b - 1 ) ]
+                LSTools.p( '\t\t', a - 1, b - 1, ls_lst[-1] )
 
         #
         # Continue recursively.
@@ -45,6 +51,8 @@ def get_ls_lst( ls, bp_lst ):
         u, v = nls.gens()
         ls_lst += get_ls_lst( nls.copy().subs( {u:u * v} ).quo( v ** bp.mult ), bp.bp_lst_t )
         ls_lst += get_ls_lst( nls.copy().subs( {v:v * u} ).quo( u ** bp.mult ), bp.bp_lst_s )
+
+    LSTools.p( 'output =', [str( ls ) for ls in ls_lst] )
 
     return ls_lst
 
@@ -138,15 +146,16 @@ def get_linear_series( deg, bp_tree ):
             ls.subs( {g:0} )
         row = sage__eval( str( ls.pol_lst ), PolyRing.num_field.gens_dict() )
         row_lst += [row]
-    LSTools.p( row_lst )
-    LSTools.p( sage_matrix( row_lst ).parent(), '\n' + sage_matrix( row_lst ).str() )
+    LSTools.p( 'matrix =', row_lst )
 
     #
     # Compute kernel.
     #
     kern = list( sage_matrix( row_lst ).right_kernel().matrix() )
-    LSTools.p( sage_matrix( kern ).parent(), '\n' + sage_matrix( kern ).str() )
-    LSTools.p( len( mon_lst ), mon_lst )
+    LSTools.p( 'kernel =', kern )
+    LSTools.p( mon_lst )
+    # LSTools.p( sage_matrix( kern ).parent(), '\n' + sage_matrix( kern ).str() )
+    # LSTools.p( len( mon_lst ), mon_lst )
 
     #
     # Obtain linear series from linear conditions on "mon_lst".

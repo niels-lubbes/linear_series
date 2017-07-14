@@ -31,6 +31,7 @@ class TestGetLinearSeries( TestTools ):
     def test__get_linear_series__1( self ):
 
         # Example from phd thesis of Niels Lubbes (page 159).
+        PolyRing.reset_base_field()
         bp_tree = BasePointTree()
         bp = bp_tree.add( 'z', ( 0, 0 ), 1 )
         bp = bp.add( 't', ( 0, 0 ), 1 )
@@ -54,6 +55,19 @@ class TestGetLinearSeries( TestTools ):
         assert self.equal_output_strings( str( bp_tree_1 ), str( bp_tree_2 ) )
 
 
+    def test__get_linear_series__3( self ):
+
+        PolyRing.reset_base_field()
+        bp_tree_1 = BasePointTree()
+        bp_tree_1.add( 'z', ( 0, 0 ), 2 ).add( 't', ( 1, 0 ), 1 )
+        bp_tree_1.add( 'z', ( 2, 3 ), 1 )
+
+        bp_tree_2 = LinearSeries.get( 3, bp_tree_1 ).get_bp_tree()
+
+        assert self.equal_output_strings( bp_tree_1.alt_str(), bp_tree_2.alt_str() )
+
+
+
 if __name__ == '__main__':
 
     # LSTools.filter( 'test_get_linear_series.py' )
@@ -62,5 +76,5 @@ if __name__ == '__main__':
     # TestGetLinearSeries().test__get_mon_lst__2_xyvw()
     # TestGetLinearSeries().test__get_linear_series__1()
     # TestGetLinearSeries().test__get_linear_series__2()
-
+    # TestGetLinearSeries().test__get_linear_series__3()
     pass

@@ -10,6 +10,7 @@ from "LinearSeries.get_solution_set()".
 from class_ls_tools import LSTools
 
 from sage_interface import sage_Combinations
+from sage_interface import sage_gcd
 
 
 def get_solution_set( ls ):
@@ -24,7 +25,7 @@ def get_solution_set( ls ):
           all polynomials in "ls.pol_lst" vanish.
     '''
 
-    LSTools.p( ls.pol_lst )
+    LSTools.p( 'input =', ls )
 
     if  len( ls.gens() ) != 2:
         raise Exception( 'Not implemented for polynomials in', ls.gens() )
@@ -39,8 +40,8 @@ def get_solution_set( ls ):
         if xres != 0:
             break
     if xres == 0:
-        if gcd( ls.pol_lst ) != 1:
-            raise ValueError( 'Expect gcd of "pol_lst" to be 1:', gcd( ls.pol_lst ) )
+        if sage_gcd( ls.pol_lst ) != 1:
+            raise ValueError( 'Expect gcd of "pol_lst" to be 1:', sage_gcd( ls.pol_lst ) )
         # TODO: handle this case as well.
         raise Exception( 'All pairs of polynomials in "pol_lst" have a common factor: ', ls.pol_lst )
 
@@ -53,7 +54,6 @@ def get_solution_set( ls ):
 
     # factor resultant in linear factors
     fct_lst = ls.ring.factor( xres )
-    LSTools.p( fct_lst )
 
     # obtain candidates for x-coordinates of solutions
     xsol_lst = []
@@ -61,7 +61,6 @@ def get_solution_set( ls ):
         xsol_lst += [ -fct[0].subs( {xres.variables()[0]:0} ) ]
     xsol_lst = list( set( xsol_lst ) )
     LSTools.p( xsol_lst )
-    LSTools.p( [type( xsol ) for xsol in xsol_lst ] )
 
     # find y-coordinate for each x-coordinate
     xysol_lst = []
@@ -94,5 +93,6 @@ def get_solution_set( ls ):
                 xysol_lst += [( xsol, ysol )]
 
     xysol_lst = list( set( xysol_lst ) )
-    LSTools.p( len( xysol_lst ), xysol_lst )
+    LSTools.p( 'output =', xysol_lst )
+
     return xysol_lst
