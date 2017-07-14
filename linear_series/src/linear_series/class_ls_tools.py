@@ -34,23 +34,24 @@ class LSTools():
     __end_time = None
 
     # private static variables used by ".p()"
-    # If "__filter_fname" is 'NO-OUTPUT' then output is surpressed.
+    # If "__filter_fname_lst" equals [] then output is surpressed.
+    # If "__filter_fname_lst" equals None the no output is surpressed
     #
-    __filter_fname = 'NO-OUTPUT'
-    __prev_filter_fname = None
+    __filter_fname_lst = []
+    __prev_filter_fname_lst = None
 
 
     @staticmethod
-    def filter( filter_fname ):
+    def filter( filter_fname_lst ):
         '''
         It is adviced to access this method 
         as LSTools.filter().  
         
         INPUT:
-            - "filter_fname" -- File name 
+            - "filter_fname_lst" -- List of file names for Python modules. 
         '''
-        LSTools.__filter_fname = filter_fname
-        LSTools.__prev_filter_fname = filter_fname
+        LSTools.__filter_fname_lst = filter_fname_lst
+        LSTools.__prev_filter_fname_lst = filter_fname_lst
 
 
     @staticmethod
@@ -58,7 +59,7 @@ class LSTools():
         '''
         Output via ".p()" will not be surpressed.
         '''
-        LSTools.__filter_fname = None
+        LSTools.__filter_fname_lst = None
 
 
     @staticmethod
@@ -66,7 +67,7 @@ class LSTools():
         '''
         Resets filter state to before previous ".filter_unset()" call.
         '''
-        LSTools.__filter_fname = LSTools.__prev_filter_fname
+        LSTools.__filter_fname_lst = LSTools.__prev_filter_fname_lst
 
 
     @staticmethod
@@ -75,31 +76,33 @@ class LSTools():
         INPUT:
             - "*arg_lst" -- List of arguments.
         OUTPUT:
-            - If ".filter_on(<fname>)" has been called and the file name
-              of the calling module does not coincide with <fname>
-              then the output is surpressed and "None" is returned.
+            - If ".filter_on(<fname_lst>)" has been called and the file name
+              of the calling module does not coincide with any <fname> in 
+              <fname_lst> then the output is surpressed and "None" is returned.
                             
               Otherwise, this method prints arguments to "sys.stdout" 
-              together with reflection info from "inspect.stack()".
-              Additional returns the output string.
+              if this method was called from a module with <fname> in 
+              <fname_lst>, together with reflection info from "inspect.stack()".
+              
+              Additionally, this method returns the output string.
               
               Call ".filter_off()" to turn off filter, such that
-              all output is send to "sys.stdout".  
-                                   
+              all output is send to "sys.stdout".                                     
         '''
         # check whether to surpress output
-        if LSTools.__filter_fname == 'NO-OUTPUT':
+        if LSTools.__filter_fname_lst == []:
             return
 
         # collect relevant info from stack trace
         sk_lst_lst = inspect.stack()
-        file_name = str( sk_lst_lst[1][1] )
+        file_name = os.path.basename( str( sk_lst_lst[1][1] ) )
         line = str( sk_lst_lst[1][2] )
         method_name = str( sk_lst_lst[1][3] )
 
-        # only output when op is called from "op.input_file_name"
-        if LSTools.__filter_fname != None:
-            if not file_name.endswith( LSTools.__filter_fname ):
+        # only output when .p() is called from module whose
+        # file name is in LSTools.__filter_fname_lst
+        if LSTools.__filter_fname_lst != None:
+            if not file_name in LSTools.__filter_fname_lst:
                 return
 
         # construct output string

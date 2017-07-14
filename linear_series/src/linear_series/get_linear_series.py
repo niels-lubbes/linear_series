@@ -154,8 +154,6 @@ def get_linear_series( deg, bp_tree ):
     kern = list( sage_matrix( row_lst ).right_kernel().matrix() )
     LSTools.p( 'kernel =', kern )
     LSTools.p( mon_lst )
-    # LSTools.p( sage_matrix( kern ).parent(), '\n' + sage_matrix( kern ).str() )
-    # LSTools.p( len( mon_lst ), mon_lst )
 
     #
     # Obtain linear series from linear conditions on "mon_lst".

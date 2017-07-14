@@ -152,9 +152,6 @@ def usecase__get_linear_series__P2():
     LSTools.p( bp_tree )
 
     ls = LinearSeries.get( 2, bp_tree )
-    LSTools.p( ls )
-
-    LSTools.p( 20 * '==' )
     LSTools.p( ls.get_bp_tree() )
 
 
@@ -351,7 +348,6 @@ def usecase__get_base_points__and__get_linear_series():
     linear series defined over QQ. The base points
     are defined over a number field.
     '''
-
     ring = PolyRing( 'x,y,z', True )
     ls = LinearSeries( ['x^2+y^2', 'y^2+x*z'], ring )
     bp_tree = ls.get_bp_tree()
@@ -365,7 +361,8 @@ def usecase__get_base_points__and__get_linear_series():
 if __name__ == '__main__':
 
     LSTools.start_timer()
-    LSTools.filter( '__main__.py' )  # output only from this module
+    LSTools.filter( ['__main__.py', 'get_linear_series.py'] )  # output only from specified modules
+    LSTools.filter( ['__main__.py'] )
 
     ################################################
     #                                              #
