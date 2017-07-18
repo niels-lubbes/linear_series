@@ -18,6 +18,9 @@ from sage_interface import sage_PolynomialRing
 from sage_interface import sage_matrix
 from sage_interface import sage_diagonal_matrix
 from sage_interface import sage_vector
+from sage_interface import sage_SR
+from sage_interface import sage_var
+from sage_interface import sage_diff
 
 
 def usecase__get_base_points__P2():
@@ -182,10 +185,9 @@ def usecase__get_linear_series__P1P1_DP6():
     # of an anticanonical model of a Del Pezzo surface of degree 6 in P^6.
     #
     # We expect that the linear series is defined by the following set of polynomials:
-    # ----
+    #
     # [ 'x^2*v^2 - y^2*w^2', 'x^2*v*w + y^2*v*w', 'x^2*w^2 + y^2*w^2', 'x*y*v^2 - y^2*v*w',
     #   'x*y*v*w - y^2*w^2', 'y^2*v*w + x*y*w^2', 'y^2*v^2 + y^2*w^2' ]
-    # ----
     #
     ls = LinearSeries.get( 2, bp_tree )
     LSTools.p( 'The linear series of bi-degree (2,2) corresponding to this base point tree is as follows:' )
@@ -196,9 +198,9 @@ def usecase__get_linear_series__P1P1_DP6():
     # and 2 simple complex conjugate base points
     #
     # We expect that the linear series is defined by the following set of polynomials:
-    # ----
+    #
     # ['x * v - y * w', 'y * v + x * w' ]
-    # ----
+    #
     #
     ls = LinearSeries.get( 1, bp_tree )
     LSTools.p( 'The linear series of bi-degree (1,1) corresponding to this base point tree is as follows:' )
@@ -358,10 +360,80 @@ def usecase__get_base_points__and__get_linear_series():
     LSTools.p( ls.get_bp_tree() )
 
 
+def usecase__linear_normalization__and__adjoint():
+    '''
+    In this usecase are some applications of the 
+    "linear_series" library.  we show by example 
+    how to compute a linear normalization X of a surface Y, 
+    or equivalently, how to compute the completion of a 
+    linear series. Also we contruct an example of a surface Z 
+    such that X is its adjoint surface.     
+    '''
+    #
+    # Linear series corresponding to the parametrization
+    # of a cubic surface X in P^4 that is the projection
+    # of the Veronese embedding of P^2 into P^5.
+    #
+    ring = PolyRing( 'x,y,z', True )
+    bp_tree = BasePointTree()
+    bp = bp_tree.add( 'z', ( 0, 0 ), 1 )
+    ls = LinearSeries.get( 2, bp_tree )
+    imp_lst = ls.get_implicit_image()
+    LSTools.p( 'linear series      =', ls.get_bp_tree() )
+    LSTools.p( 'implicit image     =', imp_lst )
+
+    #
+    # compute Hilbert polynomial of X in QQ[x0,...,x6]
+    #
+    R = sage_PolynomialRing( sage_QQ, [ 'x' + str( i ) for i in range( len( ls.pol_lst ) )] )
+    x_lst = R.gens()
+    imp_lst = sage__eval( str( imp_lst ), R.gens_dict() )
+    hpol = R.ideal( imp_lst ).hilbert_polynomial()
+    hdeg = hpol.diff().diff()
+    LSTools.p( 'Hilbert polynomial =', hpol )
+    LSTools.p( 'implicit degree    =', hdeg )
+
+    #
+    # projection of X in P^4 to Y in P^3, where Y is singular.
+    #
+    ls = LinearSeries( ['x^2-x*y', 'x*z', 'y^2', 'y*z'], PolyRing( 'x,y,z', True ) )
+    bp_tree = ls.get_bp_tree()
+    LSTools.p( 'basepoint tree of projection =', bp_tree )
+    eqn = ls.get_implicit_image()
+    assert len( eqn ) == 1
+    eqn = sage_SR( eqn[0] )
+    x0, x1, x2, x3 = sage_var( 'x0,x1,x2,x3' )
+    LSTools.p( 'eqn       =', eqn )
+    LSTools.p( 'D(eqn,x0) =', sage_diff( eqn, x0 ) )
+    LSTools.p( 'D(eqn,x1) =', sage_diff( eqn, x1 ) )
+    LSTools.p( 'D(eqn,x2) =', sage_diff( eqn, x2 ) )
+    LSTools.p( 'D(eqn,x3) =', sage_diff( eqn, x3 ) )
+
+    #
+    # compute normalization X of Y
+    #
+    ls_norm = LinearSeries.get( 2, bp_tree )
+    LSTools.p( 'normalization = ', ls_norm )
+    LSTools.p( '              = ', ls_norm.get_implicit_image() )
+
+    #
+    # define pre-adjoint surface Z
+    #
+    ring = PolyRing( 'x,y,z', True )
+    bp_tree = BasePointTree()
+    bp_tree.add( 'z', ( 0, 0 ), 2 )
+    bp_tree.add( 'z', ( 0, 1 ), 1 )
+    ls = LinearSeries.get( 5, bp_tree )
+    LSTools.p( ls.get_bp_tree() )
+
+
 if __name__ == '__main__':
 
     LSTools.start_timer()
-    LSTools.filter( ['__main__.py', 'get_linear_series.py'] )  # output only from specified modules
+    mod_lst = []
+    mod_lst += ['__main__.py']
+    # mod_lst += ['get_linear_series.py']
+    LSTools.filter( mod_lst )  # output only from specified modules
 
     ################################################
     #                                              #
@@ -376,6 +448,7 @@ if __name__ == '__main__':
     usecase__get_linear_series__P1P1_DP6()  # shows how to construct a linear series in P^1xP^1 from given base points
     usecase__get_implicit__DP6()  # shows how to compute the ideal of the surface parametrized by the linear series
     usecase__get_base_points__and__get_linear_series()  # another easy example for getting base points and linear series
+    usecase__linear_normalization__and__adjoint()  # shows how to compute linear normalization and adjoint of surface
 
     ###############################################
     #                                             #
