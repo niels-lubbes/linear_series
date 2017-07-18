@@ -132,6 +132,10 @@ def sage_diff( *args, **kwargs ):
 def sage_expand( *args, **kwargs ):
     return expand( *args, **kwargs )
 
+# from sage.calculus.var import var
+def sage_var( *args, **kwargs ):
+    return var( *args, **kwargs )
+
 
 #################################################
 # sage.combinat                                 #
@@ -144,5 +148,7 @@ def sage_Compositions( *args, **kwargs ):
 # from sage.combinat.combination import Combinations
 def sage_Combinations( *args, **kwargs ):
     return Combinations( *args, **kwargs )
+
+
 
 
