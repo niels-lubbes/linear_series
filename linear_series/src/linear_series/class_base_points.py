@@ -26,8 +26,8 @@ class BasePointTree():
         self.ls = None
 
         # A list of charts where a chart is denoted by a String.
-        # See docs of "get_base_point_tree.in_previous_chart()"
-        # for specs of chart strings.
+        # See documentation of "get_base_point_tree.in_previous_chart()"
+        # for specification of chart strings.
         #
         self.chart_lst = chart_lst
 
