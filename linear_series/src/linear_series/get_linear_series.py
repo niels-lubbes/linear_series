@@ -130,6 +130,7 @@ def get_linear_series( deg, bp_tree ):
     # monomials of degree "deg" or bidegree ("deg","deg").
     #
     mon_lst = get_mon_lst( deg, ring.gens() )
+    LSTools.p( 'mon_lst =', mon_lst )
     ls = class_linear_series.LinearSeries( mon_lst, ring )
 
     #
