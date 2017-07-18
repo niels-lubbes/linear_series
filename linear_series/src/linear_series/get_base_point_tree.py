@@ -17,7 +17,7 @@ def in_previous_chart( sol, chart ):
     We consider the following charts.
     
     * P^2(x:y:z) (projective plane). 
-      There are 3 charts: z!=0, y!=0 and x!=0, 
+      There are 3 charts: x!=0, y!=0 and z!=0, 
       denoted by 'x', 'y' and 'z' resp.
       
     * P^1xP^1(x:y; v:w) (fiber product of projective line with itself).
