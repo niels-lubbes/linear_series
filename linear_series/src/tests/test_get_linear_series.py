@@ -67,9 +67,65 @@ class TestGetLinearSeries( TestTools ):
         assert self.equal_output_strings( bp_tree_1.alt_str(), bp_tree_2.alt_str() )
 
 
+    def test__get_linear_series__4( self ):
+
+        ring = PolyRing( 'x,y,v,w', True )
+        ring.ext_num_field( 't^2 + 1' )
+        a0 = ring.root_gens()[0]
+
+        bp_tree_1 = BasePointTree( ['xv', 'xw', 'yv', 'yw'] )
+        bp = bp_tree_1.add( 'xv', ( a0, -a0 ), 1 )
+        bp = bp_tree_1.add( 'xv', ( -a0, a0 ), 1 )
+
+        bp_tree_2 = LinearSeries.get( 2, bp_tree_1 ).get_bp_tree()
+
+        bp_tree_2_str = bp_tree_2.alt_str()
+        bp_tree_2_str = bp_tree_2_str.replace( '(a0)', 'a0' )
+        bp_tree_2_str = bp_tree_2_str.replace( '(-a0)', '-a0' )
+
+        assert self.equal_output_strings( bp_tree_1.alt_str(), bp_tree_2_str )
+
+
+    def test__get_linear_series__5( self ):
+
+        ring = PolyRing( 'x,y,v,w', True )
+        ring.ext_num_field( 't^2 + 1' )
+        a0 = ring.root_gens()[0]
+
+        bp_tree_1 = BasePointTree( ['xv', 'xw', 'yv', 'yw'] )
+        bp = bp_tree_1.add( 'xv', ( a0, -a0 ), 1 )
+
+        bp_tree_2 = LinearSeries.get( 2, bp_tree_1 ).get_bp_tree()
+
+        bp_tree_2_str = bp_tree_2.alt_str()
+        bp_tree_2_str = bp_tree_2_str.replace( '(a0)', 'a0' )
+        bp_tree_2_str = bp_tree_2_str.replace( '(-a0)', '-a0' )
+
+        assert self.equal_output_strings( bp_tree_1.alt_str(), bp_tree_2_str )
+
+
+    def test__get_linear_series__6( self ):
+
+        ring = PolyRing( 'x,y,v,w', True )
+        ring.ext_num_field( 't^2 + 1' )
+        a0 = ring.root_gens()[0]
+
+        bp_tree_1 = BasePointTree( ['xv', 'xw', 'yv', 'yw'] )
+        bp = bp_tree_1.add( 'xv', ( a0, -a0 ), 2 )
+
+        bp_tree_2 = LinearSeries.get( 2, bp_tree_1 ).get_bp_tree()
+        bp_tree_2_str = bp_tree_2.alt_str()
+        bp_tree_2_str = bp_tree_2_str.replace( '(a0)', 'a0' )
+        bp_tree_2_str = bp_tree_2_str.replace( '(-a0)', '-a0' )
+
+        assert self.equal_output_strings( bp_tree_1.alt_str(), bp_tree_2_str )
+
 
 if __name__ == '__main__':
 
+    # from linear_series.class_ls_tools import LSTools
+    # LSTools.filter( None )
+    # LSTools.filter( 'class_linear_series.py' )
     # LSTools.filter( 'test_get_linear_series.py' )
     # TestGetLinearSeries().test__get_mon_lst__2_xyz()
     # TestGetLinearSeries().test__get_mon_lst__1_xyvw()
@@ -77,4 +133,7 @@ if __name__ == '__main__':
     # TestGetLinearSeries().test__get_linear_series__1()
     # TestGetLinearSeries().test__get_linear_series__2()
     # TestGetLinearSeries().test__get_linear_series__3()
+    # TestGetLinearSeries().test__get_linear_series__4()
+    # TestGetLinearSeries().test__get_linear_series__5()
+    TestGetLinearSeries().test__get_linear_series__6()
     pass

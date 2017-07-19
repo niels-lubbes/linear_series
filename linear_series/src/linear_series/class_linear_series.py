@@ -11,7 +11,6 @@ from get_linear_series import get_linear_series
 from get_implicit import get_implicit_projection
 from get_implicit import get_implicit_image
 
-from sage_interface import sage_diff
 
 class LinearSeries:
     '''
@@ -127,9 +126,8 @@ class LinearSeries:
             - Returns "self".
         '''
         u, v = self.ring.gens()
-        self.pol_lst = [ sage_diff( pol, u, mu ) for pol in self.pol_lst ]
-        self.pol_lst = [ sage_diff( pol, v, mv ) for pol in self.pol_lst ]
-
+        self.pol_lst = [ self.ring.diff( pol, u, mu ) for pol in self.pol_lst ]
+        self.pol_lst = [ self.ring.diff( pol, v, mv ) for pol in self.pol_lst ]
         return self
 
 

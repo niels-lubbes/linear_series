@@ -13,6 +13,7 @@ from class_ls_tools import LSTools
 from sage_interface import sage_QQ
 from sage_interface import sage__eval
 from sage_interface import sage_PolynomialRing
+from sage_interface import sage_diff
 from sage_interface import sage_factor
 from sage_interface import sage_gcd
 from sage_interface import sage_expand
@@ -221,6 +222,26 @@ class PolyRing:
 
         # coerce "elt" to symbolic ring
         return sage__eval( str( elt ), sym_dct )
+
+
+    def diff( self, pol, gen, mult ):
+        '''
+        INPUT:
+            - "pol"  -- A polynomial in "self.pol_ring".
+            - "gen"  -- A generator of "self.pol_ring".
+            - "mult" -- An integer.            
+        OUTPUT:
+            - Derivative of "pol" wrt. variable "gen", "mult" times.         
+        '''
+        # currently there is a bug in Sage for
+        # computing the derivative of a polynomial
+        # defined over a number field
+
+        spol, sgen = self.coerce_sr( [pol, gen] )
+        dpol = sage_diff( spol, sgen, mult )
+        dpol = self.coerce( dpol )
+
+        return dpol
 
 
     def quo( self, pol1, pol2 ):

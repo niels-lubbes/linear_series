@@ -17,6 +17,37 @@ from linear_series.sage_interface import sage_FractionField
 
 class TestClassPolyRing:
 
+    def test__diff__1( self ):
+
+        ring = PolyRing( 'x,y,v,w', True )
+        ring.ext_num_field( 't^2 + 1' )
+        x, y, v, w, a0 = ring.coerce( 'x,y,v,w,a0' )
+
+        assert ring.diff( w - a0, w, 1 ) == 1
+
+
+    def test__diff__2( self ):
+
+        ring = PolyRing( 'x,y,v,w', True )
+        ring.ext_num_field( 't^2 + 1' )
+        x, y, v, w, a0 = ring.coerce( 'x,y,v,w,a0' )
+
+        assert ring.diff( x ** 3 - a0, x, 3 ) == 6
+
+
+    def test__diff__3( self ):
+
+        ring = PolyRing( 'x,y,v,w', True )
+        ring.ext_num_field( 't^2 + 1' )
+        x, y, v, w, a0 = ring.coerce( 'x,y,v,w,a0' )
+
+        d1 = ring.diff( y ** 2 * x ** 3 - a0, x, 2 )
+        d2 = ring.diff( d1, y, 2 )
+
+        assert d1 == 6 * y ** 2 * x
+        assert d2 == 12 * x
+
+
     def test__quo( self ):
 
         ring = PolyRing( 'x,y,z', True )
@@ -174,6 +205,9 @@ class TestClassPolyRing:
 
 
 if __name__ == '__main__':
+    TestClassPolyRing().test__diff__1()
+    TestClassPolyRing().test__diff__2()
+    TestClassPolyRing().test__diff__3()
     # TestClassPolyRing().test__quo()
     # TestClassPolyRing().test__resultant()
     # TestClassPolyRing().test__aux_gcd()
