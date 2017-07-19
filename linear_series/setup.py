@@ -3,6 +3,15 @@ Use of this source code is governed by a MIT-style license that can be found in 
 Created on July 06, 2017
 @author: Niels Lubbes
 
+
+For upgrading we use the following commands:
+
+sage -python setup.py test              # make sure everything works
+sage -python setup.py sdist upload      # increase version number in setup.py before upload!
+
+
+For more information see:
+
 https://python-packaging.readthedocs.io/en/latest/minimal.html
 https://pypi.python.org/pypi?%3Aaction=list_classifiers
 '''
@@ -10,7 +19,7 @@ https://pypi.python.org/pypi?%3Aaction=list_classifiers
 from setuptools import setup
 
 setup( name = 'linear_series',
-       version = '4',
+       version = '5',
        description = 'Base point analysis for linear series of curves in the plane.',
        classifiers = [
            'Development Status :: 3 - Alpha',
