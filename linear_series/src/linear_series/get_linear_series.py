@@ -164,9 +164,13 @@ def get_linear_series( deg, bp_tree ):
     #
     # Obtain linear series from linear conditions on "mon_lst".
     #
-    mon_lst = ring.coerce( mon_lst )  # update w.r.t. PolyRing.num_field
-    kern = ring.coerce( kern )
-    pol_lst = sage_matrix( kern ) * sage_vector( mon_lst )
+    if kern != []:
+        mon_lst = ring.coerce( mon_lst )  # update w.r.t. PolyRing.num_field
+        kern = ring.coerce( kern )
+        pol_lst = sage_matrix( kern ) * sage_vector( mon_lst )
+    else:
+        pol_lst = []
+
     LSTools.p( pol_lst )
 
     return class_linear_series.LinearSeries( pol_lst, ring )

@@ -121,6 +121,22 @@ class TestGetLinearSeries( TestTools ):
         assert self.equal_output_strings( bp_tree_1.alt_str(), bp_tree_2_str )
 
 
+    def test__get_linear_series__7( self ):
+
+        ring = PolyRing( 'x,y,z', True )
+
+        # checks that 2 infinitly near base points and
+        # a simple base point is not collinear.
+        #
+        bp_tree = BasePointTree()
+        bp_tree.add( 'z', ( 1, 0 ), 1 )
+        bp = bp_tree.add( 'z', ( 0, 1 ), 1 )
+        bp.add( 't', ( 1, 0 ), 1 )
+        ls = LinearSeries.get( 1, bp_tree )
+
+        assert ls.pol_lst == []
+
+
 if __name__ == '__main__':
 
     # from linear_series.class_ls_tools import LSTools
@@ -135,5 +151,6 @@ if __name__ == '__main__':
     # TestGetLinearSeries().test__get_linear_series__3()
     # TestGetLinearSeries().test__get_linear_series__4()
     # TestGetLinearSeries().test__get_linear_series__5()
-    TestGetLinearSeries().test__get_linear_series__6()
+    # TestGetLinearSeries().test__get_linear_series__6()
+    TestGetLinearSeries().test__get_linear_series__7()
     pass
