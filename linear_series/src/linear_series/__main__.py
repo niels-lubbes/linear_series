@@ -427,13 +427,89 @@ def usecase__linear_normalization__and__adjoint():
     LSTools.p( ls.get_bp_tree() )
 
 
+def usecase__neron_severi_lattice():
+    '''
+    Compute NS-lattice of a linear series and
+    the dimension of complete linear with base points. 
+    '''
+
+    ring = PolyRing( 'x,y,z', True )
+
+
+    # Blowup of projective plane in 3 colinear points
+    # and 2 infinitly near points. The image of the
+    # map associated to the linear series is a quartic
+    # del pezzo surface with 5 families of conics. Moreover
+    # the surface contains 8 straight lines.
+    #
+    PolyRing.reset_base_field()
+    bp_tree = BasePointTree()
+    bp_tree.add( 'z', ( -1, 0 ), 1 )
+    bp_tree.add( 'z', ( 0, 0 ), 1 )
+    bp_tree.add( 'z', ( 1, 0 ), 1 )
+    bp = bp_tree.add( 'z', ( 0, 1 ), 1 )
+    bp.add( 't', ( 2, 0 ), 1 )
+    ls = LinearSeries.get( 3, bp_tree )
+    LSTools.p( ls.get_bp_tree() )
+    LSTools.p( ls.get_implicit_image() )
+
+
+    # Detects that 3 base points lie on a line.
+    #
+    bp_tree = BasePointTree()
+    bp_tree.add( 'z', ( -1, 0 ), 1 )
+    bp_tree.add( 'z', ( 0, 0 ), 1 )
+    bp_tree.add( 'z', ( 1, 0 ), 1 )
+    ls = LinearSeries.get( 1, bp_tree )
+    LSTools.p( ls )
+    assert ls.pol_lst == ring.coerce( '[y]' )
+
+    # example of infinitly near base points
+    # that is colinear with another simple base point.
+    #
+    bp_tree = BasePointTree()
+    bp = bp_tree.add( 'z', ( 0, 1 ), 1 )
+    bp.add( 't', ( 1, 0 ), 1 )
+    bp_tree.add( 'z', ( -1, 0 ), 1 )
+    ls = LinearSeries.get( 1, bp_tree )
+    LSTools.p( ls )
+    assert ls.pol_lst == ring.coerce( '[x-y+z]' )
+
+    # Detects that an infinitly near base points
+    # is not colinear with other point.
+    #
+    for p in [( -1, 0 ), ( 0, 0 ), ( 1, 0 )]:
+        bp_tree = BasePointTree()
+        bp = bp_tree.add( 'z', ( 0, 1 ), 1 )
+        bp.add( 't', ( 2, 0 ), 1 )
+        bp_tree.add( 'z', p, 1 )
+        ls = LinearSeries.get( 1, bp_tree )
+        assert ls.pol_lst == []
+
+
 if __name__ == '__main__':
+
+    ################################################
+    #                                              #
+    # Configuration of LSTools for debug output    #
+    #                                              #
+    ################################################
 
     LSTools.start_timer()
     mod_lst = []
     mod_lst += ['__main__.py']
     # mod_lst += ['get_linear_series.py']
+    # mod_lst += ['get_solution_set.py']
     LSTools.filter( mod_lst )  # output only from specified modules
+    # LSTools.filter( None ) # uncomment for showing all debug output
+
+    ################################################
+    #                                              #
+    # End of configuration of LSTools              #
+    #                                              #
+    ################################################
+
+
 
     ################################################
     #                                              #
@@ -449,6 +525,7 @@ if __name__ == '__main__':
     usecase__get_implicit__DP6()  # shows how to compute the ideal of the surface parametrized by the linear series
     usecase__get_base_points__and__get_linear_series()  # another easy example for getting base points and linear series
     usecase__linear_normalization__and__adjoint()  # shows how to compute linear normalization and adjoint of surface
+    usecase__neron_severi_lattice()  # compute NS-lattice and dimension of classes
 
     ###############################################
     #                                             #
