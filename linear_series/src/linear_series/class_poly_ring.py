@@ -369,6 +369,7 @@ class PolyRing:
               "self.get_num_field()" in 't'.        
         METHOD:
             - Adjoins roots of "pol" to the number field of "self.ring". 
+            - Returns self
         '''
 
         # factor
@@ -394,6 +395,8 @@ class PolyRing:
         # continue recursively with remaining factors until all factors are linear
         for fct in fct_lst:
             self.ext_num_field( fct[0] )
+
+        return self
 
 
     def __str__( self ):
