@@ -21,6 +21,7 @@ from sage_interface import sage_vector
 from sage_interface import sage_SR
 from sage_interface import sage_var
 from sage_interface import sage_diff
+from sage_interface import sage_factor
 
 
 def usecase__get_base_points__P2():
@@ -433,58 +434,124 @@ def usecase__neron_severi_lattice():
     the dimension of complete linear with base points. 
     '''
 
-    ring = PolyRing( 'x,y,z', True )
-
-
     # Blowup of projective plane in 3 colinear points
     # and 2 infinitly near points. The image of the
     # map associated to the linear series is a quartic
     # del pezzo surface with 5 families of conics. Moreover
     # the surface contains 8 straight lines.
     #
-    PolyRing.reset_base_field()
+    ring = PolyRing( 'x,y,z', True )
+    p1 = ( -1, 0 )
+    p2 = ( 0, 0 )
+    p3 = ( 1, 0 )
+    p4 = ( 0, 1 )
+    p5 = ( 2, 0 )
     bp_tree = BasePointTree()
-    bp_tree.add( 'z', ( -1, 0 ), 1 )
-    bp_tree.add( 'z', ( 0, 0 ), 1 )
-    bp_tree.add( 'z', ( 1, 0 ), 1 )
-    bp = bp_tree.add( 'z', ( 0, 1 ), 1 )
-    bp.add( 't', ( 2, 0 ), 1 )
+    bp_tree.add( 'z', p1, 1 )
+    bp_tree.add( 'z', p2, 1 )
+    bp_tree.add( 'z', p3, 1 )
+    bp = bp_tree.add( 'z', p4, 1 )
+    bp.add( 't', p5, 1 )
     ls = LinearSeries.get( 3, bp_tree )
-    LSTools.p( ls.get_bp_tree() )
-    LSTools.p( ls.get_implicit_image() )
-
+    LSTools.p( 'ls     = ', ls )
+    LSTools.p( ls.get_bp_tree(), '\n\n   ', ls.get_implicit_image() )
 
     # Detects that 3 base points lie on a line.
     #
     bp_tree = BasePointTree()
-    bp_tree.add( 'z', ( -1, 0 ), 1 )
-    bp_tree.add( 'z', ( 0, 0 ), 1 )
-    bp_tree.add( 'z', ( 1, 0 ), 1 )
-    ls = LinearSeries.get( 1, bp_tree )
-    LSTools.p( ls )
-    assert ls.pol_lst == ring.coerce( '[y]' )
+    bp_tree.add( 'z', p1, 1 )
+    bp_tree.add( 'z', p2, 1 )
+    bp_tree.add( 'z', p3, 1 )
+    ls123 = LinearSeries.get( 1, bp_tree )
+    LSTools.p( 'ls123  =', ls123 )
+    assert ls123.pol_lst == ring.coerce( '[y]' )
 
     # example of infinitly near base points
     # that is colinear with another simple base point.
     #
     bp_tree = BasePointTree()
-    bp = bp_tree.add( 'z', ( 0, 1 ), 1 )
+    bp_tree.add( 'z', p1, 1 )
+    bp = bp_tree.add( 'z', p4, 1 )
     bp.add( 't', ( 1, 0 ), 1 )
-    bp_tree.add( 'z', ( -1, 0 ), 1 )
-    ls = LinearSeries.get( 1, bp_tree )
-    LSTools.p( ls )
-    assert ls.pol_lst == ring.coerce( '[x-y+z]' )
+    ls1 = LinearSeries.get( 1, bp_tree )
+    LSTools.p( 'ls1    =', ls1 )
+    assert ls1.pol_lst == ring.coerce( '[x-y+z]' )
 
     # Detects that an infinitly near base points
     # is not colinear with other point.
     #
-    for p in [( -1, 0 ), ( 0, 0 ), ( 1, 0 )]:
+    for p in [p1, p2, p3]:
         bp_tree = BasePointTree()
-        bp = bp_tree.add( 'z', ( 0, 1 ), 1 )
-        bp.add( 't', ( 2, 0 ), 1 )
+        bp = bp_tree.add( 'z', p4, 1 )
+        bp.add( 't', p5, 1 )
         bp_tree.add( 'z', p, 1 )
-        ls = LinearSeries.get( 1, bp_tree )
-        assert ls.pol_lst == []
+        ls45i = LinearSeries.get( 1, bp_tree )
+        assert ls45i.pol_lst == []
+
+    # line with predefined tangent
+    #
+    bp_tree = BasePointTree()
+    bp = bp_tree.add( 'z', p4, 1 )
+    bp.add( 't', p5, 1 )
+    ls45 = LinearSeries.get( 1, bp_tree )
+    LSTools.p( 'ls45   =', ls45 )
+    assert ls45.pol_lst == ring.coerce( '[x-2*y+2*z]' )
+
+    # class of conics through 5 basepoints
+    #
+    bp_tree = BasePointTree()
+    bp_tree.add( 'z', p1, 1 )
+    bp_tree.add( 'z', p2, 1 )
+    bp_tree.add( 'z', p3, 1 )
+    bp = bp_tree.add( 'z', p4, 1 )
+    bp.add( 't', p5, 1 )
+    ls1234 = LinearSeries.get( 2, bp_tree )
+    LSTools.p( 'ls1234 =', ls1234 )
+    LSTools.p( '\t\t', sage_factor( ls1234.pol_lst[0] ) )
+    assert ring.coerce( '(x - 2*y + 2*z, 1)' ) in ring.aux_gcd( ls1234.pol_lst )[0]
+    assert ring.coerce( '(y, 1)' ) in ring.aux_gcd( ls1234.pol_lst )[0]
+
+    # class of conics through 4 basepoints
+    # has a fixed component
+    #
+    bp_tree = BasePointTree()
+    bp_tree.add( 'z', p4, 1 )
+    ls4 = LinearSeries.get( 1, bp_tree )
+    LSTools.p( 'ls4    =', ls4 )
+
+    bp_tree = BasePointTree()
+    bp_tree.add( 'z', p1, 1 )
+    bp_tree.add( 'z', p2, 1 )
+    bp_tree.add( 'z', p3, 1 )
+    bp_tree.add( 'z', p4, 1 )
+    ls1234 = LinearSeries.get( 2, bp_tree )
+    LSTools.p( 'ls1234 =', ls1234 )
+
+    # return
+
+    # Compose map associated to linear series "ls"
+    # with the inverse stereographic projection "Pinv".
+    #
+    R = sage_PolynomialRing( sage_QQ, 'y0,y1,y2,y3,y4,x,y,z' )
+    y0, y1, y2, y3, y4, x, y, z = R.gens()
+    delta = y1 ** 2 + y2 ** 2 + y3 ** 2 + y4 ** 2
+    Pinv = [ y0 ** 2 + delta, 2 * y0 * y1, 2 * y0 * y2, 2 * y0 * y3, 2 * y0 * y4, -y0 ** 2 + delta]
+    H = sage__eval( str( ls.pol_lst ), R.gens_dict() )
+    PinvH = [ elt.subs( {y0:H[0], y1:H[1], y2:H[2], y3:H[3], y4:H[4]} ) for elt in Pinv ]
+    LSTools.p( 'Pinv        =', Pinv )
+    LSTools.p( 'H           =', H )
+    LSTools.p( 'Pinv o H    =', PinvH )
+
+    # In order to compute the NS-lattice of the image
+    # of "PinvH" we do a base point analysis.
+    #
+    ls_PinvH = LinearSeries( [str( elt ) for elt in PinvH], ring )
+    LSTools.p( 'ls_PinvH    =', ls_PinvH )
+    LSTools.p( '\t\t', ls_PinvH.get_implicit_image() )
+
+    if False:  # takes a long time
+        LSTools.p( ls_PinvH.get_bp_tree() )
+
 
 
 if __name__ == '__main__':
@@ -501,7 +568,7 @@ if __name__ == '__main__':
     # mod_lst += ['get_linear_series.py']
     # mod_lst += ['get_solution_set.py']
     LSTools.filter( mod_lst )  # output only from specified modules
-    # LSTools.filter( None ) # uncomment for showing all debug output
+    # LSTools.filter( None )  # uncomment for showing all debug output
 
     ################################################
     #                                              #
@@ -517,14 +584,14 @@ if __name__ == '__main__':
     #                                              #
     ################################################
 
-    usecase__get_base_points__P2()  # shows how to obtain base points of linear series in the projective plane P^2
-    usecase__get_base_points__P1P1()  # shows how to obtain base points of linear series in P^1xP^1
-    usecase__get_base_points__examples()  # several examples of linear series and their base point
-    usecase__get_linear_series__P2()  # shows how to construct a linear series in P^2 from given base points
-    usecase__get_linear_series__P1P1_DP6()  # shows how to construct a linear series in P^1xP^1 from given base points
-    usecase__get_implicit__DP6()  # shows how to compute the ideal of the surface parametrized by the linear series
-    usecase__get_base_points__and__get_linear_series()  # another easy example for getting base points and linear series
-    usecase__linear_normalization__and__adjoint()  # shows how to compute linear normalization and adjoint of surface
+#     usecase__get_base_points__P2()  # shows how to obtain base points of linear series in the projective plane P^2
+#     usecase__get_base_points__P1P1()  # shows how to obtain base points of linear series in P^1xP^1
+#     usecase__get_base_points__examples()  # several examples of linear series and their base point
+#     usecase__get_linear_series__P2()  # shows how to construct a linear series in P^2 from given base points
+#     usecase__get_linear_series__P1P1_DP6()  # shows how to construct a linear series in P^1xP^1 from given base points
+#     usecase__get_implicit__DP6()  # shows how to compute the ideal of the surface parametrized by the linear series
+#     usecase__get_base_points__and__get_linear_series()  # another easy example for getting base points and linear series
+#     usecase__linear_normalization__and__adjoint()  # shows how to compute linear normalization and adjoint of surface
     usecase__neron_severi_lattice()  # compute NS-lattice and dimension of classes
 
     ###############################################
