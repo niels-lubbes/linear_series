@@ -83,7 +83,7 @@ def get_mon_lst( deg_lst, g_lst ):
     mon_lst = []
     if len( g_lst ) == 4:
         x, y, v, w = g_lst
-        for a, b, c, d in sage_Compositions( 2 * max( deg_lst ) + 4, length = 4 ):
+        for a, b, c, d in sage_Compositions( sum( deg_lst ) + 4, length = 4 ):
             if a + b == deg_lst[0] + 2 and c + d == deg_lst[1] + 2:
                 mon_lst += [ x ** ( a - 1 ) * y ** ( b - 1 ) * v ** ( c - 1 ) * w ** ( d - 1 ) ]
     elif len( g_lst ) == 3:

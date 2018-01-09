@@ -18,15 +18,24 @@ class TestGetLinearSeries( TestTools ):
         assert str( mon_lst ) == '[x^2, x*y, x*z, y^2, y*z, z^2]'
 
 
-    def test__get_mon_lst__1_xyvw( self ):
+    def test__get_mon_lst__11_xyvw( self ):
         mon_lst = get_mon_lst( [1, 1], PolyRing( 'x,y,v,w' ).gens() )
         assert str( mon_lst ) == '[x*v, x*w, y*v, y*w]'
 
 
-    def test__get_mon_lst__2_xyvw( self ):
+    def test__get_mon_lst__22_xyvw( self ):
         mon_lst = get_mon_lst( [2, 2], PolyRing( 'x,y,v,w' ).gens() )
         assert str( mon_lst ) == '[x^2*v^2, x^2*v*w, x^2*w^2, x*y*v^2, x*y*v*w, x*y*w^2, y^2*v^2, y^2*v*w, y^2*w^2]'
 
+    def test__get_mon_lst__12_xyvw( self ):
+        mon_lst = get_mon_lst( [1, 2], PolyRing( 'x,y,v,w' ).gens() )
+        print( mon_lst )
+        assert str( mon_lst ) == '[x*v^2, x*v*w, x*w^2, y*v^2, y*v*w, y*w^2]'
+
+    def test__get_mon_lst__21_xyvw( self ):
+        mon_lst = get_mon_lst( [2, 1], PolyRing( 'x,y,v,w' ).gens() )
+        print( mon_lst )
+        assert str( mon_lst ) == '[x^2*v, x^2*w, x*y*v, x*y*w, y^2*v, y^2*w]'
 
     def test__get_linear_series__1( self ):
 
@@ -137,6 +146,34 @@ class TestGetLinearSeries( TestTools ):
         assert ls.pol_lst == []
 
 
+
+    def test__get_linear_series__8( self ):
+
+        a0 = PolyRing( 'x,y,v,w' ).ext_num_field( 't^2 + 1' ).root_gens()[0]  # i
+        bp_tree_1 = BasePointTree( ['xv', 'xw', 'yv', 'yw'] )
+
+        bp_tree_1.add( 'xv', ( -2 * a0, a0 ), 1 )  # e2
+        bp_tree_1.add( 'xv', ( 2 * a0, -a0 ), 1 )  # e3
+        bp_tree_1.add( 'xv', ( a0, -a0 ), 1 )  # e4
+        bp_tree_1.add( 'xv', ( -a0, a0 ), 1 )  # e5
+
+        ls = LinearSeries.get( [2, 1], bp_tree_1 )  # |2e0+1e1-e2-e3-e4-e5|
+        print( ls )
+        print( bp_tree_1 )
+
+        bp_tree_2 = ls.get_bp_tree()
+        print( bp_tree_2 )
+
+        bp_tree_2_str = bp_tree_2.alt_str()
+        bp_tree_2_str = bp_tree_2_str.replace( '(a0)', 'a0' )
+        bp_tree_2_str = bp_tree_2_str.replace( '(-a0)', '-a0' )
+
+        print( bp_tree_1.alt_str() )
+        print( bp_tree_2.alt_str() )
+
+        assert self.equal_output_strings( bp_tree_1.alt_str(), bp_tree_2_str )
+
+
 if __name__ == '__main__':
 
     # from linear_series.class_ls_tools import LSTools
@@ -144,13 +181,16 @@ if __name__ == '__main__':
     # LSTools.filter( 'class_linear_series.py' )
     # LSTools.filter( 'test_get_linear_series.py' )
     # TestGetLinearSeries().test__get_mon_lst__2_xyz()
-    # TestGetLinearSeries().test__get_mon_lst__1_xyvw()
-    # TestGetLinearSeries().test__get_mon_lst__2_xyvw()
-    TestGetLinearSeries().test__get_linear_series__1()
+    # TestGetLinearSeries().test__get_mon_lst__11_xyvw()
+    # TestGetLinearSeries().test__get_mon_lst__22_xyvw()
+    # TestGetLinearSeries().test__get_mon_lst__12_xyvw()
+    # TestGetLinearSeries().test__get_mon_lst__21_xyvw()
+    # TestGetLinearSeries().test__get_linear_series__1()
     # TestGetLinearSeries().test__get_linear_series__2()
     # TestGetLinearSeries().test__get_linear_series__3()
     # TestGetLinearSeries().test__get_linear_series__4()
     # TestGetLinearSeries().test__get_linear_series__5()
     # TestGetLinearSeries().test__get_linear_series__6()
     # TestGetLinearSeries().test__get_linear_series__7()
+    TestGetLinearSeries().test__get_linear_series__8()
     pass
