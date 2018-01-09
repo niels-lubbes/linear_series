@@ -584,14 +584,14 @@ if __name__ == '__main__':
     #                                              #
     ################################################
 
-#     usecase__get_base_points__P2()  # shows how to obtain base points of linear series in the projective plane P^2
-#     usecase__get_base_points__P1P1()  # shows how to obtain base points of linear series in P^1xP^1
-#     usecase__get_base_points__examples()  # several examples of linear series and their base point
-#     usecase__get_linear_series__P2()  # shows how to construct a linear series in P^2 from given base points
-#     usecase__get_linear_series__P1P1_DP6()  # shows how to construct a linear series in P^1xP^1 from given base points
-#     usecase__get_implicit__DP6()  # shows how to compute the ideal of the surface parametrized by the linear series
-#     usecase__get_base_points__and__get_linear_series()  # another easy example for getting base points and linear series
-#     usecase__linear_normalization__and__adjoint()  # shows how to compute linear normalization and adjoint of surface
+    usecase__get_base_points__P2()  # shows how to obtain base points of linear series in the projective plane P^2
+    usecase__get_base_points__P1P1()  # shows how to obtain base points of linear series in P^1xP^1
+    usecase__get_base_points__examples()  # several examples of linear series and their base point
+    usecase__get_linear_series__P2()  # shows how to construct a linear series in P^2 from given base points
+    usecase__get_linear_series__P1P1_DP6()  # shows how to construct a linear series in P^1xP^1 from given base points
+    usecase__get_implicit__DP6()  # shows how to compute the ideal of the surface parametrized by the linear series
+    usecase__get_base_points__and__get_linear_series()  # another easy example for getting base points and linear series
+    usecase__linear_normalization__and__adjoint()  # shows how to compute linear normalization and adjoint of surface
     usecase__neron_severi_lattice()  # compute NS-lattice and dimension of classes
 
     ###############################################
