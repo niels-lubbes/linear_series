@@ -40,8 +40,8 @@ class LinearSeries:
 
 
     @staticmethod
-    def get( deg, bp_tree ):
-        return get_linear_series( deg, bp_tree )
+    def get( deg_lst, bp_tree ):
+        return get_linear_series( deg_lst, bp_tree )
 
 
     def get_implicit_projection( self, deg ):

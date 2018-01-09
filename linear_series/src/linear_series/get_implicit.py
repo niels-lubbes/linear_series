@@ -97,7 +97,11 @@ def get_implicit_projection( ls, deg ):
     x0, x1, x2, x3 = R.gens()[0:4]
     c_lst = R.gens()[4:4 + c_len]
     x, y, z = R.gens()[4 + c_len:]
-    m_lst = get_mon_lst( deg, ( x0, x1, x2, x3 ) )
+    m_lst = []
+    for a, b, c, d  in sage_Compositions( deg + 4, length = 4 ):
+        m_lst += [ x0 ** ( a - 1 ) * x1 ** ( b - 1 ) * x2 ** ( c - 1 ) * x3 ** ( d - 1 ) ]
+
+
     R_dict = R.gens_dict()
     R_dict.update( PolyRing.num_field.gens_dict() )
 

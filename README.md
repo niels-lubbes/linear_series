@@ -107,7 +107,7 @@ bp = bp_tree.add( 'z', ( 0, 0 ), 1 )
 bp = bp.add( 't', ( 0, 0 ), 1 )
 bp = bp.add( 't', ( -1, 0 ), 1 )
 bp = bp.add( 't', ( 0, 0 ), 1 )   
-print( LinearSeries.get( 2, bp_tree ) )
+print( LinearSeries.get( [2], bp_tree ) )
 ```
 Output:
 
@@ -123,7 +123,7 @@ a0 = ring.root_gens()[0]
 bp_tree = BasePointTree( ['xv', 'xw', 'yv', 'yw'] )
 bp = bp_tree.add( 'xv', ( -a0, a0 ), 1 )
 bp = bp_tree.add( 'xv', ( a0, -a0 ), 1 )
-print( LinearSeries.get( 1, bp_tree ) )
+print( LinearSeries.get( [1,1], bp_tree ) )
 ```    
 Output:    
     
@@ -143,7 +143,7 @@ a0 = ring.root_gens()[0]
 bp_tree = BasePointTree( ['xv', 'xw', 'yv', 'yw'] )
 bp = bp_tree.add( 'xv', ( -a0, a0 ), 1 )
 bp = bp_tree.add( 'xv', ( a0, -a0 ), 1 )
-ls = LinearSeries.get( 2, bp_tree )
+ls = LinearSeries.get( [2,2], bp_tree )
 print( ls.get_implicit_image() )
 ```
 Output:  

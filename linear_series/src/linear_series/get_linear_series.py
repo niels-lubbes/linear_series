@@ -62,33 +62,33 @@ def get_ls_lst( ls, bp_lst ):
     return ls_lst
 
 
-def get_mon_lst( deg, g_lst ):
+def get_mon_lst( deg_lst, g_lst ):
     '''
     INPUT:
-        - "deg"   -- An integer.
-        - "g_lst" -- List of either 3 or 4 generators of a ring. 
+        - "deg_lst" -- A list of either one or two integers representing the degree of polynomials.
+        - "g_lst"   -- List of either 3 or 4 generators of a ring. 
     OUTPUT:
         - If "gens" consist of 3 generators then returns
-          a list of all monomials in "gens" of degree "deg".
+          a list of all monomials in "gens" of degree "deg_tup[0]".
         - If "gens" consist of 4 generators then returns
-          a list of all monomials in "gens" of bi-degree ("deg","deg").
+          a list of all monomials in "gens" of bi-degree ("deg_tup[0]","deg_tup[1]").
     EXAMPLE:
-        - get_mon_lst( 2, PolyRing('x,y,z').gens() )==[z^2, y*z, x*z, y^2, x*y, x^2]
+        - get_mon_lst( [2], PolyRing('x,y,z').gens() ) == [ z^2, y*z, x*z, y^2, x*y, x^2 ]
         
-        - get_mon_lst( 2, PolyRing('x,y,v,w').gens() )== [x^2*v^2, x^2*v*w, x^2*w^2, 
-                                                          x*y*v^2, x*y*v*w, x*y*w^2, 
-                                                          y^2*v^2, y^2*v*w, y^2*w^2] 
+        - get_mon_lst( [2,2], PolyRing('x,y,v,w').gens() ) == [ x^2*v^2, x^2*v*w, x^2*w^2, 
+                                                                x*y*v^2, x*y*v*w, x*y*w^2, 
+                                                                y^2*v^2, y^2*v*w, y^2*w^2 ] 
     '''
 
     mon_lst = []
     if len( g_lst ) == 4:
         x, y, v, w = g_lst
-        for a, b, c, d in sage_Compositions( 2 * deg + 4, length = 4 ):
-            if a + b == deg + 2 and c + d == deg + 2:
+        for a, b, c, d in sage_Compositions( 2 * max( deg_lst ) + 4, length = 4 ):
+            if a + b == deg_lst[0] + 2 and c + d == deg_lst[1] + 2:
                 mon_lst += [ x ** ( a - 1 ) * y ** ( b - 1 ) * v ** ( c - 1 ) * w ** ( d - 1 ) ]
     elif len( g_lst ) == 3:
         x, y, z = g_lst
-        for a, b, c  in sage_Compositions( deg + 3, length = 3 ):
+        for a, b, c in sage_Compositions( deg_lst[0] + 3, length = 3 ):
             mon_lst += [ x ** ( a - 1 ) * y ** ( b - 1 ) * z ** ( c - 1 ) ]
     else:
         raise ValueError( 'Expect either 3 or 4 generators:', g_lst )
@@ -96,10 +96,10 @@ def get_mon_lst( deg, g_lst ):
     return mon_lst
 
 
-def get_linear_series( deg, bp_tree ):
+def get_linear_series( deg_lst, bp_tree ):
     '''
     INPUT:
-        - "deg"     -- Integer representing the degree of polynomials.
+        - "deg_lst" -- A list of either one or two integers representing the degree of polynomials.
         - "bp_tree" -- BasePointTree where base points might be in 
                        overlapping charts.
                        We require that "bp_tree.chart_lst" equals either 
@@ -107,8 +107,8 @@ def get_linear_series( deg, bp_tree ):
     OUTPUT:
         - Return A LinearSeries "ls" with base points defined by "bp_tree".
           The polynomials in "ls.pol_lst" are either 
-                  * homogeneous in (x:y:z) and of degree "deg" or          
-                  * bi-homogenous in (x:y)(v:w) and of bi-degree ("deg","deg")
+                  * homogeneous in (x:y:z) and of degree "deg_tup[0]" or          
+                  * bi-homogenous in (x:y)(v:w) and of bi-degree ("deg_tup[0]","deg_tup[1]")
           Note that there might unassigned base points. 
     '''
 
@@ -127,9 +127,9 @@ def get_linear_series( deg, bp_tree ):
 
     #
     # Obtain linear series defined by
-    # monomials of degree "deg" or bidegree ("deg","deg").
+    # monomials of degree "deg_lst[0]" or bidegree ("deg_lst[0]","deg_lst[1]").
     #
-    mon_lst = get_mon_lst( deg, ring.gens() )
+    mon_lst = get_mon_lst( deg_lst, ring.gens() )
     LSTools.p( 'mon_lst =', mon_lst )
     ls = class_linear_series.LinearSeries( mon_lst, ring )
 

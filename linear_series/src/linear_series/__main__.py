@@ -155,7 +155,7 @@ def usecase__get_linear_series__P2():
     bp = bp.add( 't', ( 0, 0 ), 1 )
     LSTools.p( bp_tree )
 
-    ls = LinearSeries.get( 2, bp_tree )
+    ls = LinearSeries.get( [2], bp_tree )
     LSTools.p( ls.get_bp_tree() )
 
 
@@ -190,7 +190,7 @@ def usecase__get_linear_series__P1P1_DP6():
     # [ 'x^2*v^2 - y^2*w^2', 'x^2*v*w + y^2*v*w', 'x^2*w^2 + y^2*w^2', 'x*y*v^2 - y^2*v*w',
     #   'x*y*v*w - y^2*w^2', 'y^2*v*w + x*y*w^2', 'y^2*v^2 + y^2*w^2' ]
     #
-    ls = LinearSeries.get( 2, bp_tree )
+    ls = LinearSeries.get( [2, 2], bp_tree )
     LSTools.p( 'The linear series of bi-degree (2,2) corresponding to this base point tree is as follows:' )
     LSTools.p( ls.get_bp_tree() )
 
@@ -203,7 +203,7 @@ def usecase__get_linear_series__P1P1_DP6():
     # ['x * v - y * w', 'y * v + x * w' ]
     #
     #
-    ls = LinearSeries.get( 1, bp_tree )
+    ls = LinearSeries.get( [1, 1], bp_tree )
     LSTools.p( 'The linear series of bi-degree (1,1) corresponding to this base point tree is as follows:' )
     LSTools.p( ls.get_bp_tree() )
 
@@ -356,7 +356,7 @@ def usecase__get_base_points__and__get_linear_series():
     bp_tree = ls.get_bp_tree()
     LSTools.p( bp_tree )
 
-    ls = LinearSeries.get( 2, bp_tree )
+    ls = LinearSeries.get( [ 2 ], bp_tree )
     LSTools.p( ls )
     LSTools.p( ls.get_bp_tree() )
 
@@ -378,7 +378,7 @@ def usecase__linear_normalization__and__adjoint():
     ring = PolyRing( 'x,y,z', True )
     bp_tree = BasePointTree()
     bp = bp_tree.add( 'z', ( 0, 0 ), 1 )
-    ls = LinearSeries.get( 2, bp_tree )
+    ls = LinearSeries.get( [2], bp_tree )
     imp_lst = ls.get_implicit_image()
     LSTools.p( 'linear series      =', ls.get_bp_tree() )
     LSTools.p( 'implicit image     =', imp_lst )
@@ -413,7 +413,7 @@ def usecase__linear_normalization__and__adjoint():
     #
     # compute normalization X of Y
     #
-    ls_norm = LinearSeries.get( 2, bp_tree )
+    ls_norm = LinearSeries.get( [2], bp_tree )
     LSTools.p( 'normalization = ', ls_norm )
     LSTools.p( '              = ', ls_norm.get_implicit_image() )
 
@@ -424,7 +424,7 @@ def usecase__linear_normalization__and__adjoint():
     bp_tree = BasePointTree()
     bp_tree.add( 'z', ( 0, 0 ), 2 )
     bp_tree.add( 'z', ( 0, 1 ), 1 )
-    ls = LinearSeries.get( 5, bp_tree )
+    ls = LinearSeries.get( [5], bp_tree )
     LSTools.p( ls.get_bp_tree() )
 
 
@@ -452,7 +452,7 @@ def usecase__neron_severi_lattice():
     bp_tree.add( 'z', p3, 1 )
     bp = bp_tree.add( 'z', p4, 1 )
     bp.add( 't', p5, 1 )
-    ls = LinearSeries.get( 3, bp_tree )
+    ls = LinearSeries.get( [3], bp_tree )
     LSTools.p( 'ls     = ', ls )
     LSTools.p( ls.get_bp_tree(), '\n\n   ', ls.get_implicit_image() )
 
@@ -462,7 +462,7 @@ def usecase__neron_severi_lattice():
     bp_tree.add( 'z', p1, 1 )
     bp_tree.add( 'z', p2, 1 )
     bp_tree.add( 'z', p3, 1 )
-    ls123 = LinearSeries.get( 1, bp_tree )
+    ls123 = LinearSeries.get( [1], bp_tree )
     LSTools.p( 'ls123  =', ls123 )
     assert ls123.pol_lst == ring.coerce( '[y]' )
 
@@ -473,7 +473,7 @@ def usecase__neron_severi_lattice():
     bp_tree.add( 'z', p1, 1 )
     bp = bp_tree.add( 'z', p4, 1 )
     bp.add( 't', ( 1, 0 ), 1 )
-    ls1 = LinearSeries.get( 1, bp_tree )
+    ls1 = LinearSeries.get( [1], bp_tree )
     LSTools.p( 'ls1    =', ls1 )
     assert ls1.pol_lst == ring.coerce( '[x-y+z]' )
 
@@ -485,7 +485,7 @@ def usecase__neron_severi_lattice():
         bp = bp_tree.add( 'z', p4, 1 )
         bp.add( 't', p5, 1 )
         bp_tree.add( 'z', p, 1 )
-        ls45i = LinearSeries.get( 1, bp_tree )
+        ls45i = LinearSeries.get( [1], bp_tree )
         assert ls45i.pol_lst == []
 
     # line with predefined tangent
@@ -493,7 +493,7 @@ def usecase__neron_severi_lattice():
     bp_tree = BasePointTree()
     bp = bp_tree.add( 'z', p4, 1 )
     bp.add( 't', p5, 1 )
-    ls45 = LinearSeries.get( 1, bp_tree )
+    ls45 = LinearSeries.get( [1], bp_tree )
     LSTools.p( 'ls45   =', ls45 )
     assert ls45.pol_lst == ring.coerce( '[x-2*y+2*z]' )
 
@@ -505,7 +505,7 @@ def usecase__neron_severi_lattice():
     bp_tree.add( 'z', p3, 1 )
     bp = bp_tree.add( 'z', p4, 1 )
     bp.add( 't', p5, 1 )
-    ls1234 = LinearSeries.get( 2, bp_tree )
+    ls1234 = LinearSeries.get( [2], bp_tree )
     LSTools.p( 'ls1234 =', ls1234 )
     LSTools.p( '\t\t', sage_factor( ls1234.pol_lst[0] ) )
     assert ring.coerce( '(x - 2*y + 2*z, 1)' ) in ring.aux_gcd( ls1234.pol_lst )[0]
@@ -516,7 +516,7 @@ def usecase__neron_severi_lattice():
     #
     bp_tree = BasePointTree()
     bp_tree.add( 'z', p4, 1 )
-    ls4 = LinearSeries.get( 1, bp_tree )
+    ls4 = LinearSeries.get( [1], bp_tree )
     LSTools.p( 'ls4    =', ls4 )
 
     bp_tree = BasePointTree()
@@ -524,7 +524,7 @@ def usecase__neron_severi_lattice():
     bp_tree.add( 'z', p2, 1 )
     bp_tree.add( 'z', p3, 1 )
     bp_tree.add( 'z', p4, 1 )
-    ls1234 = LinearSeries.get( 2, bp_tree )
+    ls1234 = LinearSeries.get( [2], bp_tree )
     LSTools.p( 'ls1234 =', ls1234 )
 
     # return
