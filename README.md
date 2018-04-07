@@ -41,13 +41,12 @@ sage -pip uninstall linear_series
 
 ## Examples
 
-See also [this file](https://github.com/niels-lubbes/linear_series/blob/master/linear_series/src/linear_series/__main__.py) 
-for example usecases. 
-
 For running the examples below, either copy paste the code into the Sage interface or run them as a Python module:
 
     sage -python -m my_module_name.py
 
+See [this file](https://github.com/niels-lubbes/linear_series/blob/master/linear_series/src/linear_series/__main__.py) 
+for more example usecases. 
 
 __Example 1: Base point analysis of linear series of curves in projective plane__
 ```python
