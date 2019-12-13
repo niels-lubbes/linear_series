@@ -19,7 +19,7 @@ https://pypi.python.org/pypi?%3Aaction=list_classifiers
 from setuptools import setup
 
 setup( name = 'linear_series',
-       version = '6',
+       version = '7',
        description = 'Base point analysis for linear series of curves in the plane.',
        classifiers = [
            'Development Status :: 3 - Alpha',
