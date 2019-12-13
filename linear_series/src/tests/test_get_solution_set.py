@@ -9,7 +9,15 @@ from linear_series.class_linear_series import LinearSeries
 
 class TestGetSolutionSet:
 
-    def test__get_solution_set( self ):
+    def test__get_solution_set__1( self ):
+        ls = LinearSeries( ['x*z^13', 'x*z^13', 'x^9*y^5', 'x^8*y^6', 'x*y*z^12+2*y*z^13'], PolyRing( 'x,y,z', True ) )
+        zls = ls.copy().chart( ['z'] )
+        print( zls )
+        sol_lst = zls.get_solution_set()
+        print( sol_lst )
+
+
+    def test__get_solution_set__2( self ):
 
         ls = LinearSeries( ['x^2*z+y^2*z', 'y^3+z^3'], PolyRing( 'x,y,z', True ) )
         xls = ls.copy().chart( ['x'] )
@@ -50,5 +58,6 @@ class TestGetSolutionSet:
         #
 
 if __name__ == '__main__':
-    # TestGetSolutionSet().test__get_solution_set()
+    TestGetSolutionSet().test__get_solution_set__1()
+    # TestGetSolutionSet().test__get_solution_set__2()
     pass

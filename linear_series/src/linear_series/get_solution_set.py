@@ -37,7 +37,7 @@ def get_solution_set( ls ):
     interval = range( len( ls.pol_lst ) )
     for i, j in sage_Combinations( interval, 2 ):
         xres = ls.ring.resultant( ls.pol_lst[i], ls.pol_lst[j], y )
-        if xres != 0:
+        if xres != 0 and xres != 1:  # resultant(x,x,y)=1
             break
     if xres == 0:
         if sage_gcd( ls.pol_lst ) != 1:
