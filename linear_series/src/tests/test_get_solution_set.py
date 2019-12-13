@@ -15,6 +15,7 @@ class TestGetSolutionSet:
         print( zls )
         sol_lst = zls.get_solution_set()
         print( sol_lst )
+        assert sol_lst == [( 0, 0 )]
 
 
     def test__get_solution_set__2( self ):
